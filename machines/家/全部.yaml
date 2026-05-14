@@ -1,0 +1,21 @@
+# 玩家据点
+machines:
+  - name: 出生点小镇
+    category: 家
+    enabled: true
+    locations:
+      - dimension: 主世界
+        coords: [0, 64, 0]
+    owner: 全员
+    travel_method: 地狱交通
+    notes:
+
+  - name: 工业区基地
+    category: 家
+    enabled: true
+    locations:
+      - dimension: 主世界
+        coords: [-970, 65, 150]
+    owner:
+    travel_method: 地狱交通
+    notes:

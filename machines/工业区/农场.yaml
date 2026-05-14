@@ -1,0 +1,100 @@
+# 工业区 - 农场类机器
+machines:
+  - name: 刷铁机
+    category: 农场
+    enabled: true
+    products:
+      - 铁锭
+      - 虞美人
+    locations:
+      - dimension: 主世界
+        coords: [-1043, 123, 401]
+    usage: >
+      打开花销毁开关和机器开关，人走关机。
+    travel_method: 地狱交通
+    notes:
+    video_url:
+    contributors:
+
+  - name: 竹子机
+    category: 农场
+    enabled: true
+    products:
+      - 竹子
+    locations:
+      - dimension: 主世界
+        coords: [-924, 67, 120]
+    usage: >
+      投入骨粉，打开开关。
+    travel_method: 地狱交通
+    notes:
+    video_url:
+    contributors:
+
+  - name: 生炸树场
+    category: 农场
+    enabled: true
+    products:
+      - 橡木
+      - 红树原木
+      - 木棍
+      - 树苗
+    locations:
+      - dimension: 主世界
+        coords: [-953, 74, 122]
+    usage: >
+      机器告示牌上详细写明使用方法。
+    notes: 可处理红树苗。
+    travel_method: 地狱交通
+    video_url:
+    contributors:
+
+  - name: 作物机
+    category: 农场
+    enabled: true
+    products:
+      - 小麦
+      - 胡萝卜
+      - 马铃薯
+      - 甜菜根
+    locations:
+      - dimension: 主世界
+        coords: [-970, 65, 113]
+    usage: >
+      告示牌上有详细说明。
+    travel_method: 地狱交通
+    notes:
+    video_url:
+    contributors:
+
+  - name: 羊毛机
+    category: 农场
+    enabled: true
+    products:
+      - 各色羊毛（散装）
+      - 各色羊毛（盒装）
+    locations:
+      - dimension: 主世界
+        coords: [-978, 69, 247]
+    usage: >
+      从箱子里直接拿，有散装和盒装两种形式。
+    travel_method: 地狱交通
+    notes:
+    video_url:
+    contributors:
+
+  - name: 仙人掌农场
+    category: 农场
+    enabled: true
+    products:
+      - 仙人掌
+      - 绿色染料
+    locations:
+      - dimension: 主世界
+        coords: [-983, 69, 264]
+    usage: >
+      箱子里拿了就行。
+    travel_method: 地狱交通
+    notes:
+    video_url:
+    contributors:

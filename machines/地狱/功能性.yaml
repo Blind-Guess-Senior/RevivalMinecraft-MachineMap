@@ -1,0 +1,33 @@
+# 地狱 - 功能性机器
+machines:
+  - name: 杀凋机
+    category: 功能性
+    enabled: true
+    products:
+      - 下界之星
+    locations:
+      - dimension: 地狱
+        coords: [-147, 113, 28]
+    usage: >
+      来到最下面对着活塞放灵魂沙。最上面箱子放凋零骷髅头颅。
+    travel_method: 地狱交通
+    notes:
+    video_url:
+    contributors:
+
+  - name: 地狱伪和平
+    category: 功能性
+    enabled: true
+    products:
+      - 地狱伪和平（抑制猪人以外怪物生成）
+    locations:
+      - dimension: 地狱
+        coords: [172, 128, 1384]
+      - dimension: 主世界
+        coords: [1270, 111, 9410]
+    usage: >
+      在烈焰人刷怪笼下方挂机。从后面地狱门加载器返回主世界。从 (1270, 111, 9410) 地狱门返回地狱，然后回家。
+    notes: Y坐标待确认（原文标注为 y）。
+    travel_method: 地狱交通
+    video_url:
+    contributors:

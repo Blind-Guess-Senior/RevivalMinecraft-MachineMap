@@ -1,0 +1,81 @@
+# 主世界 - 散落各地的农场类机器
+machines:
+  - name: 袭击塔
+    category: 农场
+    enabled: true
+    products:
+      - 绿宝石
+      - 红石粉
+      - 不死图腾
+      - 鞍
+      - 附魔书
+    locations:
+      - dimension: 主世界
+        coords: [-1293, 124, 1355]
+      - dimension: 地狱
+        coords: [-159, 128, 163]
+    usage: >
+      发射器中拿等级为2的灾厄药水喝下。打开开关。使用横扫锋利经验修补的钻石剑（不可用击退和火焰附加）打假人。如果袭击源源不断则开机成功。
+    notes: >
+      进入末地前必须携带烟花鞘翅！
+      武器要求：横扫 + 锋利 + 经验修补，禁止击退和火焰附加。
+    travel_method: 地狱交通
+    video_url: https://www.bilibili.com/video/BV1WSeEzhEVZ/
+    contributors:
+
+  - name: 刷沙机
+    category: 工厂
+    enabled: true
+    products:
+      - 沙子
+      - 沙砾
+      - 混凝土粉末
+    locations:
+      - dimension: 主世界
+        coords: [-1490, 20, -151]
+      - dimension: 地狱
+        coords: [-188, 128, -18]
+    usage: >
+      先在末地测挂个人。主世界打开地狱门加载器。进入末地后打开收集开关即可。支持热切换。
+    notes: 同时也是末地入口。
+    travel_method: 地狱交通
+    video_url:
+    contributors:
+
+  - name: 黑曜石农场
+    category: 农场
+    enabled: true
+    products:
+      - 黑曜石
+    locations:
+      - dimension: 主世界
+        coords: [2396, 123, -2865]
+      - dimension: 地狱
+        coords: [301, 132, -363]
+    usage: >
+      来回都从地狱门 (165, 128, -361) 进入。打开地狱侧的开关。无需挂机。
+    travel_method: 地狱交通
+    notes:
+    video_url:
+    contributors:
+
+  - name: 鱼塔
+    category: 农场
+    enabled: false
+    products:
+      - 生鱼
+      - 生鲑鱼
+      - 河豚
+      - 热带鱼
+      - 骨头
+    locations:
+      - dimension: 主世界
+        coords: [1611, 144, -1725]
+      - dimension: 地狱
+        coords: [190, 143, -211]
+    usage: >
+      从地狱门 (201, 128, -257) 进出。需三人操作：主世界挂机一人，地狱处死一人，修机器一人。处死需全套保护四，11gt 攻击假人。
+    notes: 收集端目前有点问题，建议暂不使用。使用时需三人配合。
+    travel_method: 地狱交通
+    video_url:
+    contributors:

@@ -37,21 +37,43 @@ const App = {
   // === 初始化 ===
   async init() {
     try {
-      const resp = await fetch('machines.yaml');
-      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-      const text = await resp.text();
-      const data = jsyaml.load(text);
-      if (!data || !Array.isArray(data.machines)) {
-        throw new Error('machines.yaml 格式错误：缺少顶层 machines 数组');
+      // 加载索引文件
+      const idxResp = await fetch('machines/index.yaml');
+      if (!idxResp.ok) throw new Error(`index.yaml: HTTP ${idxResp.status}`);
+      const idxText = await idxResp.text();
+      const idx = jsyaml.load(idxText);
+      if (!idx || !Array.isArray(idx.files)) {
+        throw new Error('index.yaml 格式错误：缺少 files 列表');
       }
-      this.machines = data.machines;
+
+      // 逐个加载机器数据文件
+      const allMachines = [];
+      for (const file of idx.files) {
+        try {
+          const resp = await fetch('machines/' + file);
+          if (!resp.ok) {
+            console.warn('跳过 ' + file + ': HTTP ' + resp.status);
+            continue;
+          }
+          const text = await resp.text();
+          const data = jsyaml.load(text);
+          if (data && Array.isArray(data.machines)) {
+            allMachines.push(...data.machines);
+          }
+        } catch (e) {
+          console.warn('跳过 ' + file + ': ' + e.message);
+        }
+      }
+
+      if (allMachines.length === 0) throw new Error('没有加载到任何机器数据');
+      this.machines = allMachines;
       this.filter();
       this.renderAll();
       this.bindEvents();
       this.showError(null);
     } catch (err) {
       console.error(err);
-      this.showError('无法加载 machines.yaml：' + err.message);
+      this.showError('加载失败：' + err.message);
       this.machines = [];
       this.filtered = [];
       this.renderAll();

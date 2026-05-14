@@ -1,0 +1,445 @@
+# ============================================================
+#  Revival Minecraft 服务器 - 机器信息数据库
+#  修改此文件即可更新网站内容
+#  分类: 农场 / 工厂 / 功能性 / 其他 / 家
+#  维度: 主世界 / 地狱 / 末地
+#  前往方式: 地狱交通 / ... (自行填写)
+# ============================================================
+
+machines:
+  - name: 刷铁机
+    category: 农场
+    enabled: true
+    products:
+      - 铁锭
+      - 虞美人
+    locations:
+      - dimension: 主世界
+        coords: [-1043, 123, 401]
+    usage: >
+      打开花销毁开关和机器开关，人走关机。
+    travel_method: 地狱交通
+    notes:
+    video_url:
+    contributors:
+
+  - name: 刷石机
+    category: 工厂
+    enabled: true
+    products:
+      - 圆石
+      - 石头
+    locations:
+      - dimension: 主世界
+        coords: [-923, 67, 141]
+    usage: >
+      打开开关。理论上抗卸载。
+    travel_method: 地狱交通
+    notes:
+    video_url:
+    contributors:
+
+  - name: 竹子机
+    category: 农场
+    enabled: true
+    products:
+      - 竹子
+    locations:
+      - dimension: 主世界
+        coords: [-924, 67, 120]
+    usage: >
+      投入骨粉，打开开关。
+    travel_method: 地狱交通
+    notes:
+    video_url:
+    contributors:
+
+  - name: 生炸树场
+    category: 农场
+    enabled: true
+    products:
+      - 橡木
+      - 红树原木
+      - 木棍
+      - 树苗
+    locations:
+      - dimension: 主世界
+        coords: [-953, 74, 122]
+    usage: >
+      机器告示牌上详细写明使用方法。
+    notes: 可处理红树苗。
+    travel_method: 地狱交通
+    video_url:
+    contributors:
+
+  - name: 作物机
+    category: 农场
+    enabled: true
+    products:
+      - 小麦
+      - 胡萝卜
+      - 马铃薯
+      - 甜菜根
+    locations:
+      - dimension: 主世界
+        coords: [-970, 65, 113]
+    usage: >
+      告示牌上有详细说明。
+    travel_method: 地狱交通
+    notes:
+    video_url:
+    contributors:
+
+  - name: 192熔炉组
+    category: 工厂
+    enabled: true
+    products:
+      - 各种烧制成品
+    locations:
+      - dimension: 主世界
+        coords: [-955, 68, 192]
+    usage: >
+      原料放入铁轨上面的箱子。机器开关在地狱门加载器旁边，向下为开启。
+    notes: 192个熔炉组成的超级熔炉阵列。
+    travel_method: 地狱交通
+    video_url:
+    contributors:
+
+  - name: 羊毛机
+    category: 农场
+    enabled: true
+    products:
+      - 各色羊毛（散装）
+      - 各色羊毛（盒装）
+    locations:
+      - dimension: 主世界
+        coords: [-978, 69, 247]
+    usage: >
+      从箱子里直接拿，有散装和盒装两种形式。
+    travel_method: 地狱交通
+    notes:
+    video_url:
+    contributors:
+
+  - name: 仙人掌农场
+    category: 农场
+    enabled: true
+    products:
+      - 仙人掌
+      - 绿色染料
+    locations:
+      - dimension: 主世界
+        coords: [-983, 69, 264]
+    usage: >
+      箱子里拿了就行。
+    travel_method: 地狱交通
+    notes:
+    video_url:
+    contributors:
+
+  - name: 袭击塔
+    category: 农场
+    enabled: true
+    products:
+      - 绿宝石
+      - 红石粉
+      - 不死图腾
+      - 鞍
+      - 附魔书
+    locations:
+      - dimension: 主世界
+        coords: [-1293, 124, 1355]
+      - dimension: 地狱
+        coords: [-159, 128, 163]
+    usage: >
+      发射器中拿等级为2的灾厄药水喝下。打开开关。使用横扫锋利经验修补的钻石剑（不可用击退和火焰附加）打假人。如果袭击源源不断则开机成功。
+    notes: >
+      进入末地前必须携带烟花鞘翅！
+      武器要求：横扫 + 锋利 + 经验修补，禁止击退和火焰附加。
+    travel_method: 地狱交通
+    video_url: https://www.bilibili.com/video/BV1WSeEzhEVZ/
+    contributors:
+
+  - name: 疣猪兽农场
+    category: 农场
+    enabled: true
+    products:
+      - 生猪排
+      - 皮革
+    locations:
+      - dimension: 地狱
+        coords: [23, 128, -80]
+    travel_method: 地狱交通
+    usage:
+    notes:
+    video_url:
+    contributors:
+
+  - name: 刷沙机
+    category: 工厂
+    enabled: true
+    products:
+      - 沙子
+      - 沙砾
+      - 混凝土粉末
+    locations:
+      - dimension: 主世界
+        coords: [-1490, 20, -151]
+      - dimension: 地狱
+        coords: [-188, 128, -18]
+    usage: >
+      先在末地测挂个人。主世界打开地狱门加载器。进入末地后打开收集开关即可。支持热切换。
+    notes: 同时也是末地入口。
+    travel_method: 地狱交通
+    video_url:
+    contributors:
+
+  - name: 潜影壳农场
+    category: 农场
+    enabled: true
+    products:
+      - 潜影壳
+    locations:
+      - dimension: 末地
+        coords: [-73, 167, -2204]
+    usage: >
+      登上脚手架，关闭活板门挂机。
+    travel_method: 地狱交通
+    notes:
+    video_url:
+    contributors:
+
+  - name: 猪灵交易所
+    category: 功能性
+    enabled: true
+    products:
+      - 各种以物易物产物
+      - 下界石英
+      - 萤石粉
+      - 灵魂沙
+    locations:
+      - dimension: 主世界
+        coords: [1199, 131, 940]
+      - dimension: 地狱
+        coords: [151, 130, 116]
+    usage: >
+      箱子里放入盒装金块，打开箱子旁边的开关。
+    travel_method: 地狱交通
+    notes:
+    video_url:
+    contributors:
+
+  - name: 堆门猪人塔
+    category: 农场
+    enabled: true
+    products:
+      - 金粒
+      - 腐肉
+      - 金剑
+    locations:
+      - dimension: 地狱
+        coords: [145, 260, -2308]
+      - dimension: 主世界
+        coords: [-34, 128, -328]
+    usage: >
+      堆门最上面挂人。回到主世界侧，用亡灵杀手V + 横扫的钻石剑打假人。全套保护四+经验修补钻套。记得带高饱食度食物。
+    notes: 武器必须亡灵杀手V + 横扫，不能用锋利。
+    travel_method: 地狱交通
+    video_url:
+    contributors:
+
+  - name: 恶魂塔
+    category: 农场
+    enabled: true
+    products:
+      - 恶魂之泪
+      - 火药
+    locations:
+      - dimension: 主世界
+        coords: [-2943, 195, -5140]
+      - dimension: 地狱
+        coords: [-368, 128, -605]
+    usage: >
+      地狱玻璃处挂人。主世界打开处死开关，然后打假人。
+    travel_method: 地狱交通
+    notes:
+    video_url:
+    contributors:
+
+  - name: 凋零骷髅农场
+    category: 农场
+    enabled: true
+    products:
+      - 凋零骷髅头颅
+      - 骨头
+      - 煤炭
+    locations:
+      - dimension: 地狱
+        coords: [-1533, 183, -1157]
+    usage: >
+      亡灵杀手 + 横扫打假人。
+    notes: 无主世界坐标，仅地狱侧。
+    travel_method: 地狱交通
+    video_url:
+    contributors:
+
+  - name: 沼泽刷怪塔
+    category: 农场
+    enabled: true
+    products:
+      - 黏液球
+      - 腐肉
+      - 骨头
+      - 线
+    locations:
+      - dimension: 主世界
+        coords: [-3582, 63, -1420]
+      - dimension: 地狱
+        coords: [-444, 128, -175]
+    usage: >
+      通过水电梯到最上方挂机。
+    travel_method: 地狱交通
+    notes:
+    video_url:
+    contributors:
+
+  - name: 主世界伪和平
+    category: 功能性
+    enabled: true
+    products:
+      - 伪和平（抑制怪物生成）
+    locations:
+      - dimension: 主世界
+        coords: [-3766, -45, 458]
+      - dimension: 地狱
+        coords: [-470, 128, 59]
+    usage: >
+      参见视频教程。
+    travel_method: 地狱交通
+    notes:
+    video_url: https://www.bilibili.com/video/BV1WKyEBTEkT/
+    contributors:
+
+  - name: 地狱伪和平
+    category: 功能性
+    enabled: true
+    products:
+      - 地狱伪和平（抑制猪人以外怪物生成）
+    locations:
+      - dimension: 地狱
+        coords: [172, 128, 1384]
+      - dimension: 主世界
+        coords: [1270, 111, 9410]
+    usage: >
+      在烈焰人刷怪笼下方挂机。从后面地狱门加载器返回主世界。从 (1270, 111, 9410) 地狱门返回地狱，然后回家。
+    notes: Y坐标待确认（原文标注为 y）。
+    travel_method: 地狱交通
+    video_url:
+    contributors:
+
+  - name: 黑曜石农场
+    category: 农场
+    enabled: true
+    products:
+      - 黑曜石
+    locations:
+      - dimension: 主世界
+        coords: [2396, 123, -2865]
+      - dimension: 地狱
+        coords: [301, 132, -363]
+    usage: >
+      来回都从地狱门 (165, 128, -361) 进入。打开地狱侧的开关。无需挂机。
+    travel_method: 地狱交通
+    notes:
+    video_url:
+    contributors:
+
+  - name: 鱼塔
+    category: 农场
+    enabled: false
+    products:
+      - 生鱼
+      - 生鲑鱼
+      - 河豚
+      - 热带鱼
+      - 骨头
+    locations:
+      - dimension: 主世界
+        coords: [1611, 144, -1725]
+      - dimension: 地狱
+        coords: [190, 143, -211]
+    usage: >
+      从地狱门 (201, 128, -257) 进出。需三人操作：主世界挂机一人，地狱处死一人，修机器一人。处死需全套保护四，11gt 攻击假人。
+    notes: 收集端目前有点问题，建议暂不使用。使用时需三人配合。
+    travel_method: 地狱交通
+    video_url:
+    contributors:
+
+  - name: 简易蜜蜂机
+    category: 农场
+    enabled: true
+    products:
+      - 蜜脾
+      - 蜂蜜瓶
+    locations:
+      - dimension: 地狱
+        coords: [-89, 128, 61]
+    usage: >
+      打开开关挂机。
+    travel_method: 地狱交通
+    notes:
+    video_url:
+    contributors:
+
+  - name: 杀凋机
+    category: 功能性
+    enabled: true
+    products:
+      - 下界之星
+    locations:
+      - dimension: 地狱
+        coords: [-147, 113, 28]
+    usage: >
+      来到最下面对着活塞放灵魂沙。最上面箱子放凋零骷髅头颅。
+    travel_method: 地狱交通
+    notes:
+    video_url:
+    contributors:
+
+  - name: 村民交易所
+    category: 功能性
+    enabled: true
+    products:
+      - 附魔书
+      - 各种村民交易物品
+    locations:
+      - dimension: 主世界
+        coords: [-1358, 70, 230]
+      - dimension: 地狱
+        coords: [-180, 128, 32]
+    travel_method: 地狱交通
+    usage:
+    notes:
+    video_url:
+    contributors:
+
+  # --- 家 ---
+  - name: 出生点小镇
+    category: 家
+    enabled: true
+    locations:
+      - dimension: 主世界
+        coords: [0, 64, 0]
+    owner: 全员
+    travel_method: 地狱交通
+    notes:
+
+  - name: 工业区基地
+    category: 家
+    enabled: true
+    locations:
+      - dimension: 主世界
+        coords: [-970, 65, 150]
+    owner:
+    travel_method: 地狱交通
+    notes:

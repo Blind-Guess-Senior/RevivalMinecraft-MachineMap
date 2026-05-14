@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Revival Minecraft — 机器地图</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1>Revival Minecraft</h1>
+    <p class="subtitle">服务器机器信息总览</p>
+    <p class="update-hint">修改 <code>machines.yaml</code> 并推送即可更新网站</p>
+  </header>
+
+  <nav class="view-tabs">
+    <button class="view-tab active" data-view="map">地图</button>
+    <button class="view-tab" data-view="cards">卡片</button>
+    <button class="view-tab" data-view="table">表格</button>
+  </nav>
+
+  <section class="toolbar">
+    <div class="search-box">
+      <input type="text" id="search-input" placeholder="搜索机器名称、产物、用法...">
+      <button id="search-clear" class="search-clear" hidden>&times;</button>
+    </div>
+    <div class="category-filters" id="category-filters"></div>
+    <div class="machine-count" id="machine-count"></div>
+  </section>
+
+  <main class="main-content">
+    <!-- 地图视图 -->
+    <section id="view-map" class="view active">
+      <div class="dimension-tabs" id="dimension-tabs"></div>
+      <div class="map-container">
+        <canvas id="map-canvas"></canvas>
+        <div id="map-tooltip" class="map-tooltip" hidden></div>
+      </div>
+      <div class="map-legend" id="map-legend"></div>
+    </section>
+
+    <!-- 卡片视图 -->
+    <section id="view-cards" class="view">
+      <div class="card-grid" id="card-grid"></div>
+      <div class="empty-state" id="cards-empty" hidden>
+        <p>没有找到匹配的机器</p>
+      </div>
+    </section>
+
+    <!-- 表格视图 -->
+    <section id="view-table" class="view">
+      <div class="table-wrap">
+        <table id="machine-table">
+          <thead>
+            <tr>
+              <th data-sort="name">名称</th>
+              <th data-sort="category">分类</th>
+              <th data-sort="dimension">维度</th>
+              <th>坐标</th>
+              <th>产物</th>
+              <th>前往方式</th>
+              <th data-sort="enabled">状态</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+      <div class="empty-state" id="table-empty" hidden>
+        <p>没有找到匹配的机器</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- 详情弹窗 -->
+  <div id="detail-overlay" class="modal-overlay">
+    <div class="modal-backdrop" id="modal-backdrop"></div>
+    <div class="modal" id="detail-modal">
+      <button class="modal-close" id="modal-close">✕</button>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <!-- 错误提示 -->
+  <div id="error-banner" class="error-banner" hidden>
+    <span id="error-msg"></span>
+    <button id="error-dismiss">&times;</button>
+  </div>
+
+  <footer class="site-footer">
+    <p>更新方法：修改 <code>machines.yaml</code> → 推送至 GitHub → Pages 自动部署</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

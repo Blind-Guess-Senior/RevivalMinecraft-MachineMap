@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m http.server 8080)",
+      "Bash(curl -s \"http://localhost:8080/machines.yaml\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://localhost:8080/index.html\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://localhost:8080/css/style.css\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://localhost:8080/js/app.js\")",
+      "Bash(node *)",
+      "Bash(npm init *)",
+      "Bash(npm install *)",
+      "Bash(pkill -f \"python -m http.server 8080\")",
+      "PowerShell(Get-Process *)",
+      "Bash(rm -rf node_modules package.json package-lock.json)"
+    ]
+  }
+}

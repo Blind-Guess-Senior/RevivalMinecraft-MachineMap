@@ -16,6 +16,7 @@
   --factory: #ff9800;
   --utility: #42a5f5;
   --home: #ec407a;
+  --wonder: #f4b400;
   --other: #9e9e9e;
 
   --danger: #ef5350;
@@ -182,6 +183,7 @@ body {
 .cat-chip.factory.active { background: var(--factory); }
 .cat-chip.utility.active { background: var(--utility); }
 .cat-chip.home.active    { background: var(--home); }
+.cat-chip.wonder.active  { background: var(--wonder); }
 .cat-chip.other.active   { background: var(--other); }
 
 .machine-count {
@@ -279,6 +281,7 @@ body {
 .legend-dot.factory { background: var(--factory); }
 .legend-dot.utility { background: var(--utility); }
 .legend-dot.home    { background: var(--home); }
+.legend-dot.wonder  { background: var(--wonder); }
 .legend-dot.other   { background: var(--other); }
 
 /* --- 卡片视图 --- */
@@ -306,6 +309,7 @@ body {
 .card.factory { border-left-color: var(--factory); }
 .card.utility { border-left-color: var(--utility); }
 .card.home    { border-left-color: var(--home); }
+.card.wonder  { border-left-color: var(--wonder); }
 .card.other   { border-left-color: var(--other); }
 .card.disabled { opacity: 0.55; }
 
@@ -335,6 +339,7 @@ body {
 .card-badge.factory { background: var(--factory); }
 .card-badge.utility { background: var(--utility); }
 .card-badge.home    { background: var(--home); }
+.card-badge.wonder  { background: var(--wonder); }
 .card-badge.other   { background: var(--other); }
 
 .card-locations {
@@ -517,6 +522,7 @@ body {
 .modal-badge.factory { background: var(--factory); }
 .modal-badge.utility { background: var(--utility); }
 .modal-badge.home    { background: var(--home); }
+.modal-badge.wonder  { background: var(--wonder); }
 .modal-badge.other   { background: var(--other); }
 
 .modal-section { margin-bottom: 14px; }

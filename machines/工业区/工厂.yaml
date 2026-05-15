@@ -10,9 +10,9 @@ machines:
       - dimension: 主世界
         coords: [-923, 67, 141]
     usage: >
-      打开开关。理论上抗卸载。
-    travel_method: 地狱交通
-    notes:
+      打开开关。
+    travel_method: 步行
+    notes: 理论上抗卸载。确保每周一服务器停机备份时处于关机状态。
     video_url:
     contributors:
 
@@ -20,29 +20,14 @@ machines:
     category: 工厂
     enabled: true
     products:
-      - 各种烧制成品
+      - 烧炼产物
     locations:
       - dimension: 主世界
         coords: [-955, 68, 192]
     usage: >
       原料放入铁轨上面的箱子。机器开关在地狱门加载器旁边，向下为开启。
-    notes: 192个熔炉组成的超级熔炉阵列。地图以此为中心。
-    travel_method: 地狱交通
+    notes: 
+    travel_method: 步行
     video_url:
-    contributors:
+    contributors: wusanmaster
 
-  - name: 简易蜜蜂机
-    category: 农场
-    enabled: true
-    products:
-      - 蜜脾
-      - 蜂蜜瓶
-    locations:
-      - dimension: 地狱
-        coords: [-89, 128, 61]
-    usage: >
-      打开开关挂机。
-    travel_method: 地狱交通
-    notes: 地狱侧，靠近工业区地狱门。
-    video_url:
-    contributors:

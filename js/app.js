@@ -30,9 +30,9 @@ const App = {
   MAP_SCALE: 1.0,
 
   // 分类定义
-  CATEGORIES: ['农场', '工厂', '功能性', '家', '其他'],
-  CAT_KEYS: { '农场': 'farm', '工厂': 'factory', '功能性': 'utility', '家': 'home', '其他': 'other' },
-  CAT_COLORS: { '农场': '#4caf50', '工厂': '#ff9800', '功能性': '#42a5f5', '家': '#ec407a', '其他': '#9e9e9e' },
+  CATEGORIES: ['农场', '工厂', '功能性', '家', '奇观', '其他'],
+  CAT_KEYS: { '农场': 'farm', '工厂': 'factory', '功能性': 'utility', '家': 'home', '奇观': 'wonder', '其他': 'other' },
+  CAT_COLORS: { '农场': '#4caf50', '工厂': '#ff9800', '功能性': '#42a5f5', '家': '#ec407a', '奇观': '#f4b400', '其他': '#9e9e9e' },
 
   // === 初始化 ===
   async init() {
@@ -367,14 +367,14 @@ const App = {
     grid.innerHTML = this.filtered.map(m => {
       const catKey = this.CAT_KEYS[m.category] || 'other';
       const disabled = m.enabled === false ? ' disabled' : '';
-      const isHome = m.category === '家';
+      const isLandmark = m.category === '家' || m.category === '奇观';
 
       const locs = (m.locations || []).map(l =>
         `<div><span class="card-loc-dim">${l.dimension}</span> <span class="card-loc-coords">${(l.coords||[]).join(', ')}</span></div>`
       ).join('');
 
-      const prods = isHome
-        ? (m.owner ? `<span class="card-prod-tag">👤 ${this.escapeHtml(m.owner)}</span>` : '')
+      const prods = isLandmark
+        ? (m.owner ? `<span class="card-prod-tag">👤 ${this.escapeHtml(m.owner)}</span>` : (m.notes ? `<span class="card-usage">${this.escapeHtml(m.notes)}</span>` : ''))
         : (m.products || []).map(p => `<span class="card-prod-tag">${p}</span>`).join('');
 
       const travel = m.travel_method ? `<div class="card-travel">🚪 ${this.escapeHtml(m.travel_method)}</div>` : '';
@@ -388,7 +388,7 @@ const App = {
             <span class="card-badge ${catKey}">${m.category}</span>
           </div>
           <div class="card-locations">${locs}</div>
-          ${isHome ? `<div class="card-products">${prods}</div>` : `<div class="card-products">${prods}</div>`}
+          ${prods ? `<div class="card-products">${prods}</div>` : ''}
           ${travel}
           ${m.usage ? `<div class="card-usage">${this.escapeHtml(m.usage)}</div>` : ''}
           ${video}
@@ -428,8 +428,8 @@ const App = {
       const locs = (m.locations || []).map(l =>
         `<div>${l.dimension}: ${(l.coords||[]).join(', ')}</div>`
       ).join('');
-      const isHome = m.category === '家';
-      const prods = isHome
+      const isLandmark = m.category === '家' || m.category === '奇观';
+      const prods = isLandmark
         ? (m.owner ? '👤 ' + this.escapeHtml(m.owner) : '')
         : (m.products || []).join('、');
       const travel = m.travel_method || '';
@@ -454,7 +454,7 @@ const App = {
     const overlay = document.getElementById('detail-overlay');
     const content = document.getElementById('modal-content');
     const catKey = this.CAT_KEYS[machine.category] || 'other';
-    const isHome = machine.category === '家';
+    const isLandmark = machine.category === '家' || machine.category === '奇观';
 
     const locs = (machine.locations || []).map(l =>
       `<div>📍 <strong>${l.dimension}</strong>：<span class="modal-value mono">${(l.coords||[]).join(', ')}</span></div>`
@@ -469,9 +469,12 @@ const App = {
       : '<span style="color:#4caf50">✅ 正常</span>';
 
     let extra = '';
-    if (isHome) {
+    if (isLandmark) {
       if (machine.owner) {
         extra += `<div class="modal-section"><div class="modal-label">所属</div><div class="modal-value">👤 ${this.escapeHtml(machine.owner)}</div></div>`;
+      }
+      if (machine.notes) {
+        extra += `<div class="modal-section"><div class="modal-label">简介</div><div class="modal-value">${this.escapeHtml(machine.notes)}</div></div>`;
       }
     } else {
       const prods = (machine.products || []).map(p => `<span class="modal-prod">${p}</span>`).join('');
@@ -613,8 +616,8 @@ const App = {
           tooltip.hidden = false;
           const prods = (hit.machine.products || []).slice(0, 4).join('、');
           const more = (hit.machine.products || []).length > 4 ? '…' : '';
-          const label = hit.machine.category === '家'
-            ? (hit.machine.owner ? `👤 ${this.escapeHtml(hit.machine.owner)}` : '')
+          const label = (hit.machine.category === '家' || hit.machine.category === '奇观')
+            ? (hit.machine.owner ? `👤 ${this.escapeHtml(hit.machine.owner)}` : (hit.machine.notes || ''))
             : `${prods}${more}`;
           tooltip.innerHTML = `<div class="tt-name">${this.escapeHtml(hit.machine.name)}</div>${label ? `<div class="tt-products">${label}</div>` : ''}`;
           const csx = canvas.clientWidth / (canvas.width / (window.devicePixelRatio || 1));

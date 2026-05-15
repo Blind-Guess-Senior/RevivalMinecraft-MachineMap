@@ -63,11 +63,8 @@ machines:
     category: 农场
     enabled: false
     products:
-      - 生鱼
-      - 生鲑鱼
-      - 河豚
-      - 热带鱼
-      - 骨头
+      - 海晶石
+      - 海晶灯
     locations:
       - dimension: 主世界
         coords: [1611, 144, -1725]

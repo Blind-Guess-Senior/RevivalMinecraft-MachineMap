@@ -10,9 +10,9 @@ machines:
       - dimension: 主世界
         coords: [-1043, 123, 401]
     usage: >
-      打开花销毁开关和机器开关，人走关机。
+      打开花销毁开关和机器开关
     travel_method: 地狱交通
-    notes:
+    notes: 人走关机。
     video_url:
     contributors:
 
@@ -96,5 +96,21 @@ machines:
       箱子里拿了就行。
     travel_method: 地狱交通
     notes:
+    video_url:
+    contributors:
+
+  - name: 简易蜜蜂机
+    category: 农场
+    enabled: true
+    products:
+      - 蜜脾
+      - 蜂蜜瓶
+    locations:
+      - dimension: 地狱
+        coords: [-89, 128, 61]
+    usage: >
+      打开开关挂机。
+    travel_method: 地狱交通
+    notes: 地狱侧，靠近工业区地狱门。
     video_url:
     contributors:

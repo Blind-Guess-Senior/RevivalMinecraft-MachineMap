@@ -388,7 +388,7 @@ const App = {
     }
 
     const rects = [];
-    const REGION_THRESHOLD = 0.9;
+    const REGION_THRESHOLD = 1.2;
 
     if (this.MAP_SCALE < REGION_THRESHOLD) {
       // --- 区域模式：有归属的画区域圆圈，散装机器画独立点 ---
@@ -964,7 +964,7 @@ const App = {
       const [wx, wz] = this.canvasToWorld(mx, my, rect.width, rect.height);
 
       const zoom = e.deltaY < 0 ? 1.15 : 1 / 1.15;
-      const newScale = Math.min(8, Math.max(0.15, this.MAP_SCALE * zoom));
+      const newScale = Math.min(12, Math.max(0.15, this.MAP_SCALE * zoom));
       this.MAP_SCALE = newScale;
 
       const [nx, nz] = this.worldToCanvas(wx, wz, rect.width, rect.height);

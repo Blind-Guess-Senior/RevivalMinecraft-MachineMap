@@ -312,11 +312,6 @@ const App = {
       }
     }
 
-    // 计算网格间隔
-    let gs = 100;
-    if (this.MAP_SCALE < 0.4) gs = 500;
-    else if (this.MAP_SCALE < 0.8) gs = 200;
-
     // 绘制背景
     ctx.fillStyle = '#12121e';
     ctx.fillRect(0, 0, w, h);
@@ -345,6 +340,14 @@ const App = {
     const worldMaxX = Math.max(visMinX, visMaxX);
     const worldMinZ = Math.min(visMinZ, visMaxZ);
     const worldMaxZ = Math.max(visMinZ, visMaxZ);
+
+    // 计算网格间隔（以显示空间为准，地狱维度 ×8）
+    const ds = this.DIM_SCALE[this.activeDim] || 1;
+    const dispRange = Math.max(worldMaxX - worldMinX, worldMaxZ - worldMinZ) * ds;
+    let gs = 100;
+    if (dispRange > 8000) gs = 1000;
+    else if (dispRange > 3000) gs = 500;
+    else if (dispRange > 1500) gs = 200;
 
     const gx0 = Math.floor(worldMinX / gs) * gs;
     const gz0 = Math.floor(worldMinZ / gs) * gs;

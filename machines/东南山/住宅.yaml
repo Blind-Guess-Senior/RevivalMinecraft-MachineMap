@@ -4,7 +4,7 @@ machines:
     enabled: true
     locations:
       - dimension: 主世界
-        coords: [-963, 60, 293]\
+        coords: [-963, 60, 293]
     owner: 盲猜派高层
     travel_method: 步行
-    
+

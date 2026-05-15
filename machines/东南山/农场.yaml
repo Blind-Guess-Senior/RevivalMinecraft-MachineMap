@@ -12,7 +12,7 @@ machines:
     usage: >
       打开花销毁开关和机器开关
     travel_method: 地狱交通
-    portal: 工业区地狱门
+    station: 工业区地狱门
     notes: 人走关机。
     video_url:
     contributors:

@@ -14,9 +14,28 @@ const App = {
   sortDir: 1,
 
   // 交通数据
-  portals: [],
+  stations: [],
   routes: [],
   regions: {},   // folder → { name, center, dimension }
+
+  // 站点类型样式
+  STATION_TYPES: ['车站', '地狱门', '驿站', '冰道站', '港口', '空港'],
+  STATION_COLORS: { '车站': '#ff9800', '地狱门': '#e040fb', '驿站': '#8d6e63', '冰道站': '#4fc3f7', '港口': '#1e88e5', '空港': '#e0e0e0' },
+  STATION_ICONS: { '车站': '🚂', '地狱门': '⏥', '驿站': '🐴', '冰道站': '🛷', '港口': '⚓', '空港': '🪶' },
+
+  // 线路方法样式
+  ROUTE_METHODS: ['主世界矿车', '地狱矿车', '马道', '冰道', '水路', '空路'],
+  ROUTE_STYLES: {
+    '主世界矿车': { color: '#ffb432', dash: [10, 5] },
+    '地狱矿车':   { color: '#e040fb', dash: [8, 4] },
+    '马道':       { color: '#8d6e63', dash: [] },
+    '冰道':       { color: '#4fc3f7', dash: [3, 3] },
+    '水路':       { color: '#1e88e5', dash: [2, 6] },
+    '空路':       { color: '#e0e0e0', dash: [1, 8] }
+  },
+
+  // 维度缩放 (地狱 1 格 = 主世界 8 格)
+  DIM_SCALE: { '主世界': 1, '地狱': 8, '末地': 1 },
 
   // 地图状态
   _mapRects: [],
@@ -111,21 +130,40 @@ const App = {
   },
 
   async loadTransitData() {
+    // 加载站点
     try {
-      const pResp = await fetch('machines/交通/地狱门.yaml');
-      if (pResp.ok) {
-        const pData = jsyaml.load(await pResp.text());
-        if (pData && Array.isArray(pData.portals)) this.portals = pData.portals;
+      const sResp = await fetch('machines/交通/站点.yaml');
+      if (sResp.ok) {
+        const sData = jsyaml.load(await sResp.text());
+        if (sData && Array.isArray(sData.stations)) {
+          // 地狱门自动补全地狱侧坐标
+          for (const s of sData.stations) {
+            if (s.type === '地狱门') {
+              const ow = (s.locations || []).find(l => l.dimension === '主世界');
+              if (ow && ow.coords) {
+                const exists = (s.locations || []).some(l => l.dimension === '地狱');
+                if (!exists) {
+                  s.locations.push({
+                    dimension: '地狱',
+                    coords: [Math.round(ow.coords[0] / 8), ow.coords[1], Math.round(ow.coords[2] / 8)]
+                  });
+                }
+              }
+            }
+          }
+          this.stations = sData.stations;
+        }
       }
-    } catch (e) { console.warn('加载地狱门数据失败:', e.message); }
+    } catch (e) { console.warn('加载站点失败:', e.message); }
 
+    // 加载线路
     try {
-      const rResp = await fetch('machines/交通/矿车线路.yaml');
+      const rResp = await fetch('machines/交通/线路.yaml');
       if (rResp.ok) {
         const rData = jsyaml.load(await rResp.text());
         if (rData && Array.isArray(rData.routes)) this.routes = rData.routes;
       }
-    } catch (e) { console.warn('加载矿车线路失败:', e.message); }
+    } catch (e) { console.warn('加载线路失败:', e.message); }
   },
 
   // === 筛选 ===
@@ -224,8 +262,11 @@ const App = {
   //  地图视图
   // ========================
   worldToCanvas(wx, wz, cw, ch) {
-    const cx = (wx - this.MAP_CENTER_X) * this.MAP_SCALE + cw / 2 + this._panX;
-    const cy = ch / 2 - (wz - this.MAP_CENTER_Z) * this.MAP_SCALE + this._panZ;
+    const ds = this.DIM_SCALE[this.activeDim] || 1;
+    const nx = wx * ds;
+    const nz = wz * ds;
+    const cx = (nx - this.MAP_CENTER_X) * this.MAP_SCALE + cw / 2 + this._panX;
+    const cy = ch / 2 - (nz - this.MAP_CENTER_Z) * this.MAP_SCALE + this._panZ;
     return [cx, cy];
   },
 
@@ -426,9 +467,10 @@ const App = {
   },
 
   canvasToWorld(cx, cy, cw, ch) {
-    const wx = (cx - cw / 2 - this._panX) / this.MAP_SCALE + this.MAP_CENTER_X;
-    const wz = this.MAP_CENTER_Z - (cy - ch / 2 - this._panZ) / this.MAP_SCALE;
-    return [wx, wz];
+    const ds = this.DIM_SCALE[this.activeDim] || 1;
+    const nx = (cx - cw / 2 - this._panX) / this.MAP_SCALE + this.MAP_CENTER_X;
+    const nz = this.MAP_CENTER_Z - (cy - ch / 2 - this._panZ) / this.MAP_SCALE;
+    return [nx / ds, nz / ds];
   },
 
   findMapMachine(ex, ey) {
@@ -466,10 +508,10 @@ const App = {
     ctx.fillStyle = '#12121e';
     ctx.fillRect(0, 0, w, h);
 
-    const portals = this.portals;
+    const stations = this.stations;
     const routes = this.routes;
 
-    if (portals.length === 0) {
+    if (stations.length === 0) {
       ctx.fillStyle = '#666680';
       ctx.font = '16px ' + getComputedStyle(document.body).fontFamily;
       ctx.textAlign = 'center';
@@ -478,14 +520,14 @@ const App = {
       return;
     }
 
-    // 用地狱侧坐标计算画布位置
-    const netherCoords = portals.map(p => {
-      const nl = (p.locations || []).find(l => l.dimension === '地狱') || p.locations[0];
-      return { portal: p, x: (nl.coords || [0, 0, 0])[0], z: (nl.coords || [0, 0, 0])[2] };
+    // 使用主世界坐标（所有站点都有主世界坐标或自动补全）
+    const nodes = stations.map(s => {
+      const loc = (s.locations || []).find(l => l.dimension === '主世界') || s.locations[0];
+      return { station: s, x: (loc.coords || [0, 0, 0])[0], z: (loc.coords || [0, 0, 0])[2] };
     });
 
     let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
-    for (const n of netherCoords) {
+    for (const n of nodes) {
       if (n.x < minX) minX = n.x; if (n.x > maxX) maxX = n.x;
       if (n.z < minZ) minZ = n.z; if (n.z > maxZ) maxZ = n.z;
     }
@@ -503,66 +545,76 @@ const App = {
 
     // 绘制线路
     for (const route of routes) {
-      const from = netherCoords.find(n => n.portal.name === route.from);
-      const to = netherCoords.find(n => n.portal.name === route.to);
+      const from = nodes.find(n => n.station.name === route.from);
+      const to = nodes.find(n => n.station.name === route.to);
       if (!from || !to) continue;
 
       const [fx, fz] = [tx(from.x), tz(from.z)];
       const [tx2, tz2] = [tx(to.x), tz(to.z)];
+      const style = this.ROUTE_STYLES[route.method] || { color: '#888', dash: [] };
 
-      ctx.strokeStyle = route.method === '矿车' ? 'rgba(255, 180, 50, 0.5)' : 'rgba(100, 200, 255, 0.4)';
+      ctx.strokeStyle = style.color;
       ctx.lineWidth = 2;
-      ctx.setLineDash(route.method === '矿车' ? [8, 4] : []);
+      ctx.setLineDash(style.dash);
       ctx.beginPath(); ctx.moveTo(fx, fz); ctx.lineTo(tx2, tz2); ctx.stroke();
       ctx.setLineDash([]);
 
-      // 线路标签
-      const mx = (fx + tx2) / 2, mz = (fz + tz2) / 2;
+      const mx2 = (fx + tx2) / 2, mz2 = (fz + tz2) / 2;
       ctx.fillStyle = '#aaa';
       ctx.font = '10px ' + getComputedStyle(document.body).fontFamily;
       ctx.textAlign = 'center';
       const label = [route.method, route.time].filter(Boolean).join(' ');
-      if (label) ctx.fillText(label, mx, mz - 5);
+      if (label) ctx.fillText(label, mx2, mz2 - 5);
     }
 
-    // 绘制地狱门节点
+    // 绘制站点
     const rects = [];
-    for (const n of netherCoords) {
+    for (const n of nodes) {
       const [sx, sz] = [tx(n.x), tz(n.z)];
-      const r = 10;
+      const color = this.STATION_COLORS[n.station.type] || '#888';
+      const icon = this.STATION_ICONS[n.station.type] || '●';
+      const r = n.station.type === '地狱门' ? 10 : 7;
 
+      // 外圈
       ctx.beginPath();
       ctx.arc(sx, sz, r + 3, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(255,255,255,0.15)';
+      ctx.fillStyle = 'rgba(255,255,255,0.12)';
       ctx.fill();
 
+      // 主体
       ctx.beginPath();
       ctx.arc(sx, sz, r, 0, Math.PI * 2);
-      ctx.fillStyle = '#e040fb';
+      ctx.fillStyle = color;
       ctx.fill();
 
-      // 菱形内标记
+      // 图标
       ctx.fillStyle = '#fff';
       ctx.font = 'bold 9px ' + getComputedStyle(document.body).fontFamily;
       ctx.textAlign = 'center';
-      ctx.fillText('⏥', sx, sz + 3);
+      ctx.fillText(icon, sx, sz + 3);
 
+      // 名称
       ctx.fillStyle = '#e4e4f0';
       ctx.font = 'bold 12px ' + getComputedStyle(document.body).fontFamily;
       ctx.textAlign = 'left';
-      ctx.fillText(n.portal.name, sx + r + 6, sz + 5);
+      ctx.fillText(n.station.name, sx + r + 6, sz + 5);
 
-      rects.push({ sx, sz, r: r + 4, portal: n.portal, x: n.x, z: n.z });
+      rects.push({ sx, sz, r: r + 4, station: n.station, x: n.x, z: n.z });
     }
-
     this._transitRects = rects;
 
     // 图例
     const legend = document.getElementById('transit-legend');
     legend.innerHTML = `
-      <span class="legend-item"><span class="legend-dot" style="background:#e040fb"></span>地狱门</span>
-      <span class="legend-item" style="color:#ffb432">--- 矿车线路</span>
-      <span class="legend-item" style="color:rgba(100,200,255,0.7)">--- 步行</span>
+      <span class="legend-item" style="margin-right:16px;color:#aaa">站点</span>
+      ${this.STATION_TYPES.map(t =>
+        `<span class="legend-item"><span class="legend-dot" style="background:${this.STATION_COLORS[t]}"></span>${t}</span>`
+      ).join('')}
+      <span class="legend-item" style="margin-left:16px;color:#aaa">线路</span>
+      ${this.ROUTE_METHODS.map(rm => {
+        const s = this.ROUTE_STYLES[rm];
+        return `<span class="legend-item" style="color:${s.color}">${s.dash.length ? '---' : '———'} ${rm}</span>`;
+      }).join('')}
     `;
   },
 
@@ -604,7 +656,7 @@ const App = {
         ? (m.owner ? `<span class="card-prod-tag">👤 ${this.escapeHtml(m.owner)}</span>` : (m.notes ? `<span class="card-usage">${this.escapeHtml(m.notes)}</span>` : ''))
         : (m.products || []).map(p => `<span class="card-prod-tag">${p}</span>`).join('');
 
-      const travel = m.travel_method ? `<div class="card-travel">🚪 ${this.escapeHtml(m.travel_method)}${m.portal ? ' → ' + this.escapeHtml(m.portal) : ''}</div>` : '';
+      const travel = m.travel_method ? `<div class="card-travel">🚪 ${this.escapeHtml(m.travel_method)}${m.station ? ' → ' + this.escapeHtml(m.station) : ''}</div>` : '';
 
       const video = m.video_url ? `<a class="card-video" href="${this.escapeHtml(m.video_url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">📺 教程视频</a>` : '';
 
@@ -688,7 +740,7 @@ const App = {
     ).join('');
 
     const travel = machine.travel_method
-      ? `<div class="modal-section"><div class="modal-label">前往方式</div><div class="modal-value">${this.escapeHtml(machine.travel_method)}${machine.portal ? ' → 🚪 ' + this.escapeHtml(machine.portal) : ''}</div></div>`
+      ? `<div class="modal-section"><div class="modal-label">前往方式</div><div class="modal-value">${this.escapeHtml(machine.travel_method)}${machine.station ? ' → 🚏 ' + this.escapeHtml(machine.station) : ''}</div></div>`
       : '';
 
     const status = machine.enabled === false
@@ -932,12 +984,11 @@ const App = {
       if (hit) {
         transitCanvas.style.cursor = 'pointer';
         transitTooltip.hidden = false;
-        const p = hit.portal;
-        const ow = (p.locations || []).find(l => l.dimension === '主世界');
-        const ne = (p.locations || []).find(l => l.dimension === '地狱');
-        transitTooltip.innerHTML = `<div class="tt-name">${this.escapeHtml(p.name)}</div>
-          ${ow ? `<div class="tt-products">主: ${(ow.coords||[]).join(', ')}</div>` : ''}
-          ${ne ? `<div class="tt-products">地狱: ${(ne.coords||[]).join(', ')}</div>` : ''}`;
+        const s = hit.station;
+        const locs = (s.locations || []).map(l =>
+          `${l.dimension}: ${(l.coords||[]).join(', ')}`
+        ).join('<br>');
+        transitTooltip.innerHTML = `<div class="tt-name">${this.STATION_ICONS[s.type] || ''} ${this.escapeHtml(s.name)}</div><div class="tt-products">${locs}</div>`;
         const csx = transitCanvas.clientWidth / (transitCanvas.width / (window.devicePixelRatio || 1));
         const csy = transitCanvas.clientHeight / (transitCanvas.height / (window.devicePixelRatio || 1));
         transitTooltip.style.left = (hit.sx * csx) + 'px';
@@ -952,18 +1003,18 @@ const App = {
       const rect = transitCanvas.getBoundingClientRect();
       const hit = this.findTransitNode(e.clientX - rect.left, e.clientY - rect.top);
       if (hit) {
-        // 点击地狱门：切换到主世界维度地图并移动到该位置
-        const ow = (hit.portal.locations || []).find(l => l.dimension === '主世界');
-        if (ow && ow.coords) {
-          this.activeDim = ow.dimension;
+        // 点击站点：跳到对应维度地图位置
+        const s = hit.station;
+        const loc = (s.locations || [])[0];
+        if (loc && loc.coords) {
+          this.activeDim = loc.dimension || '主世界';
           this.MAP_SCALE = 1.0;
-          this.MAP_CENTER_X = ow.coords[0];
-          this.MAP_CENTER_Z = ow.coords[2];
+          this.MAP_CENTER_X = loc.coords[0];
+          this.MAP_CENTER_Z = loc.coords[2];
           this._panX = 0;
           this._panZ = 0;
           this.renderDimensionTabs();
           this.renderMap();
-          // 切换到地图视图
           document.querySelectorAll('.view-tab').forEach(b => b.classList.remove('active'));
           document.querySelector('.view-tab[data-view="map"]').classList.add('active');
           this.activeView = 'map';

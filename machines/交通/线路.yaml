@@ -1,27 +1,32 @@
-# 地狱交通线路
-# from / to 引用地狱门的 name
+# 交通线路
+# method: 主世界矿车 / 地狱矿车 / 马道 / 冰道 / 水路 / 空路
 routes:
   - from: 工业区地狱门
     to: 北二环地狱门
-    method: 矿车
+    method: 地狱矿车
     time: ~2分钟
 
   - from: 工业区地狱门
     to: 刷沙机地狱门
-    method: 矿车
+    method: 地狱矿车
     time:
 
   - from: 工业区地狱门
     to: 堆门猪人塔地狱门
-    method: 矿车
+    method: 地狱矿车
     time:
 
   - from: 北二环地狱门
     to: 黑曜石地狱门
-    method: 矿车
+    method: 地狱矿车
     time:
 
   - from: 北二环地狱门
     to: 鱼塔地狱门
-    method: 矿车
+    method: 地狱矿车
+    time:
+
+  - from: 工业区车站
+    to: 北二环车站
+    method: 主世界矿车
     time:

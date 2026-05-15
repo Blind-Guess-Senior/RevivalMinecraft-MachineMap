@@ -1,0 +1,11 @@
+machines:
+  - name: mid-south sea
+    category: 家
+    enabled: true
+    locations:
+      - dimension: 主世界
+        coords: [-461, 64, 134]
+    owner: rele
+    travel_method: 步行
+    station: 北二环地狱门
+    contributors: rele

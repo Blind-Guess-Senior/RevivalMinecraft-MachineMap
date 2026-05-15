@@ -59,6 +59,7 @@ dimension: 主世界
 stations:
   - name: 新地狱门
     type: 地狱门         # 车站 / 地狱门 / 驿站 / 冰道站 / 港口 / 空港
+    region: 东南山        # 所属区域文件夹名
     locations:
       - dimension: 主世界
         coords: [x, y, z]
@@ -132,6 +133,7 @@ fs.writeFileSync('files.json', JSON.stringify(walk('.').sort(), null, 2));
 | ----------- | ---- | --------------------------------------------- |
 | `name`      | ✓    | 站点名                                        |
 | `type`      | ✓    | `车站` `地狱门` `驿站` `冰道站` `港口` `空港` |
+| `region`    | ✓    | 所属区域文件夹名                               |
 | `locations` | ✓    | 地狱门只存主世界坐标，地狱侧自动计算          |
 
 ## 交通线路 `交通/线路.yaml`

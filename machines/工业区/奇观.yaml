@@ -8,14 +8,13 @@ machines:
     owner: wusanmaster
     travel_method: 步行
     notes:
-  
+
   - name: 地球
     category: 奇观
     enabled: true
     locations:
       - dimension: 主世界
-        coords: []
+        coords: [-906, 170, 124]
     owner: wusanmaster
     travel_method: 烟花鞘翅
     notes:
-

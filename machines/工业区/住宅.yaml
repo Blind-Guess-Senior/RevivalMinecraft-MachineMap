@@ -1,0 +1,10 @@
+machines:
+  - name: 地下基地
+    category: 家
+    enabled: true
+    locations:
+      - dimension: 主世界
+        coords: [-963, 60, 293]\
+    owner: 盲猜派高层
+    travel_method: 步行
+    

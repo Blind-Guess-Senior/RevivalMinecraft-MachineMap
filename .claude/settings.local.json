@@ -11,7 +11,8 @@
       "Bash(npm install *)",
       "Bash(pkill -f \"python -m http.server 8080\")",
       "PowerShell(Get-Process *)",
-      "Bash(rm -rf node_modules package.json package-lock.json)"
+      "Bash(rm -rf node_modules package.json package-lock.json)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }

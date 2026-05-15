@@ -1,0 +1,27 @@
+# 地狱交通线路
+# from / to 引用地狱门的 name
+routes:
+  - from: 工业区地狱门
+    to: 北二环地狱门
+    method: 矿车
+    time: ~2分钟
+
+  - from: 工业区地狱门
+    to: 刷沙机地狱门
+    method: 矿车
+    time:
+
+  - from: 工业区地狱门
+    to: 堆门猪人塔地狱门
+    method: 矿车
+    time:
+
+  - from: 北二环地狱门
+    to: 黑曜石地狱门
+    method: 矿车
+    time:
+
+  - from: 北二环地狱门
+    to: 鱼塔地狱门
+    method: 矿车
+    time:

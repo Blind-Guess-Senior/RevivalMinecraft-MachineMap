@@ -15,6 +15,7 @@
 
   <nav class="view-tabs">
     <button class="view-tab active" data-view="map">地图</button>
+    <button class="view-tab" data-view="transit">交通</button>
     <button class="view-tab" data-view="cards">卡片</button>
     <button class="view-tab" data-view="table">表格</button>
   </nav>
@@ -37,6 +38,15 @@
         <div id="map-tooltip" class="map-tooltip" hidden></div>
       </div>
       <div class="map-legend" id="map-legend"></div>
+    </section>
+
+    <!-- 交通视图 -->
+    <section id="view-transit" class="view">
+      <div class="map-container">
+        <canvas id="transit-canvas"></canvas>
+        <div id="transit-tooltip" class="map-tooltip" hidden></div>
+      </div>
+      <div class="map-legend" id="transit-legend"></div>
     </section>
 
     <!-- 卡片视图 -->

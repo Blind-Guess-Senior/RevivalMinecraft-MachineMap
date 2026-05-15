@@ -1,0 +1,17 @@
+# 末地 - 农场
+machines:
+  - name: 潜影壳农场
+    category: 农场
+    enabled: true
+    locations:
+      - dimension: 末地
+        coords: [-73, 167, -2204]
+    products:
+      - 潜影壳
+    usage: >
+      登上脚手架，关闭活板门挂机。
+    station:
+    contributors: wusanmaster
+    notes: >
+      需要烟花鞘翅
+    video_url:

@@ -1,13 +1,59 @@
 # 交通线路
 # method: 矿车 / 地狱矿车 / 马道 / 冰道 / 水路 / 空路
 routes:
-  - from: 东南山 地狱门
-    to: 北二环 地狱门
-    method: 地狱矿车
-    time:
-
+  # 矿车交通
   - from: 东南山 东站
     to: 北二环 站
     method: 矿车
     time:
 
+  # 地狱矿车交通
+  - from: 东南山 地狱门
+    to: 末地传送门 地狱门
+    method: 地狱矿车
+
+  - from: 东南山 地狱门
+    to: 黑曜石农场地狱门
+    method: 地狱矿车
+
+  - from: 东南山 地狱门
+    to: 袭击塔地狱门
+    method: 地狱矿车
+
+  - from: 东南山 地狱门
+    to: 鱼塔地狱门
+    method: 地狱矿车
+
+  - from: 东南山 地狱门
+    to: 猪灵交易所地狱门
+    method: 地狱矿车
+
+  - from: 东南山 地狱门
+    to: 村民交易所地狱门
+    method: 地狱矿车
+
+  - from: 东南山 地狱门
+    to: 主世界伪和平地狱门
+    method: 地狱矿车
+
+  - from: 东南山 地狱门
+    to: 猪人塔地狱门
+    method: 地狱矿车
+
+  - from: 东南山 地狱门
+    to: 地狱伪和平地狱门
+    method: 地狱矿车
+
+  # 马道
+  - from: 东南山 东一驿
+    to: 北二环 驿站
+    method: 马道
+    time:
+
+# 冰道
+
+# 地狱冰道
+
+# 航运
+
+# 空运

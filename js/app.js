@@ -738,7 +738,7 @@ const App = {
 
     const notes = machine.notes ? `<div class="modal-notes">⚠️ ${this.escapeHtml(machine.notes)}</div>` : '';
     const video = machine.video_url
-      ? `<a class="modal-video" href="${this.escapeHtml(machine.video_url)}" target="_blank" rel="noopener">📺 查看教程视频</a>`
+      ? `<a class="modal-video" href="${this.escapeHtml(machine.video_url)}" target="_blank" rel="noopener">📺 相关链接</a>`
       : '';
 
     content.innerHTML = `

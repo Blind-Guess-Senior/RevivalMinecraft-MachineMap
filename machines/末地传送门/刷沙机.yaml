@@ -1,4 +1,5 @@
 machines:
+  # TODO: 末地坐标
   - name: 刷沙机
     category: 工厂
     enabled: true

@@ -1,0 +1,26 @@
+machines:
+  - name: 袭击塔
+    category: 农场
+    enabled: true
+    locations:
+      - dimension: 主世界
+        coords: [-1293, 124, 1355]
+      - dimension: 地狱
+        coords: [-160, 128, 165]
+    products:
+      - 绿宝石块
+      - 红石块
+      - 不死图腾
+      - 鞍
+      - 蜘蛛眼
+      - 萤石粉
+      - 火药
+      - 2-5级不详药水
+      - 不详旗帜
+    usage: >
+      发射器中拿等级为2的灾厄药水喝下。打开开关。使用横扫锋利经验修补的钻石剑 (不可用击退和火焰附加) 打假人。如果袭击源源不断则开机成功。
+    station: 袭击塔地狱门
+    contributors: wusanmaster
+    notes: >
+      武器要求：横扫 + 锋利 + 经验修补，禁止击退和火焰附加。
+    video_url: https://www.bilibili.com/video/BV1WSeEzhEVZ/

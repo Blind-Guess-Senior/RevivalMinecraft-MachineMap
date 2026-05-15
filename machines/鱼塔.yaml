@@ -1,0 +1,21 @@
+# 主世界 - 散落各地的农场类机器
+machines:
+  - name: 鱼塔
+    category: 农场
+    enabled: false
+    locations:
+      - dimension: 主世界
+        coords: [1611, 144, -1725]
+      - dimension: 地狱
+        coords: [190, 143, -211]
+    products:
+      - 海晶石
+      - 海晶灯
+    usage: >
+      从地狱门 (201, 128, -257) 进出。需三人操作：主世界挂机一人，地狱处死一人，修机器一人。处死需全套保护四，11gt 攻击假人。
+    station: 鱼塔地狱门
+    contributors: wusanmaster
+    notes: >
+      收集端目前有点问题，建议暂不使用。
+      使用时需三人配合。
+    video_url:

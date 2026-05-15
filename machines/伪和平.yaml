@@ -1,0 +1,35 @@
+machines:
+  - name: 主世界伪和平
+    category: 功能性
+    enabled: true
+    products:
+      - 伪和平（抑制怪物生成）
+    locations:
+      - dimension: 主世界
+        coords: [-3766, -45, 458]
+      - dimension: 地狱
+        coords: [-470, 128, 59]
+    usage: >
+      参见视频教程。
+    station: 主世界伪和平地狱门
+    contributors: wusanmaster
+    notes:
+    video_url: https://www.bilibili.com/video/BV1WKyEBTEkT/
+
+  - name: 地狱伪和平
+    category: 功能性
+    enabled: true
+    locations:
+      - dimension: 地狱
+        coords: [172, 128, 1384]
+      - dimension: 主世界
+        coords: [1270, 111, 9410]
+    products:
+      - 地狱伪和平（抑制猪人以外怪物生成）
+    usage: >
+      在烈焰人刷怪笼下方挂机。从后面地狱门加载器返回主世界。从 (1270, 111, 9410) 地狱门返回地狱，然后回家。
+    station: 地狱伪和平地狱门
+    contributors: wusanmaster
+    notes: >
+      建议烈焰人数量为 (玩家数 x 70 + 3)。
+    video_url:

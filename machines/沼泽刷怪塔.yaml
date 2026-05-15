@@ -1,0 +1,27 @@
+machines:
+  # TODO: 检查交通方式
+  - name: 沼泽刷怪塔
+    category: 农场
+    enabled: true
+    locations:
+      - dimension: 主世界
+        coords: [-3582, 63, -1420]
+      - dimension: 地狱
+        coords: [-444, 128, -175]
+    products:
+      - 黏液球
+      - 腐肉
+      - 骨头
+      - 线
+      - 弓箭
+      - 木棍
+      - 糖
+      - 火药
+      - 萤石
+      - 红石粉
+    usage: >
+      通过水电梯到最上方挂机。
+    station:
+    contributors: wusanmaster
+    notes:
+    video_url:

@@ -22,7 +22,7 @@ stations:
     region: 东南山
     locations:
       - dimension: 主世界
-        coords: [-960, 68, 200]
+        coords: [-916, 68, 156]
 
   # 北二环
   - name: 北二环 地狱门
@@ -30,13 +30,90 @@ stations:
     region: 北二环
     locations:
       - dimension: 主世界
-        coords: [1199, 131, 940]
+        coords: [-432, 67, 152]
 
   - name: 北二环 站
     type: 车站
     region: 北二环
     locations:
       - dimension: 主世界
-        coords: [1200, 70, 900]
+        coords: [-496, 63, 136]
+
+  - name: 北二环 驿站
+    type: 驿站
+    region: 北二环
+    locations:
+      - dimension: 主世界
+        coords: [-496, 63, 136]
+
+  - name: 北二环 码头
+    type: 港口
+    region: 北二环
+    locations:
+      - dimension: 主世界
+        coords: [-445, 63, 134]
+
+  # 末地传送门
+  - name: 末地传送门 地狱门
+    type: 地狱门
+    region: 末地传送门
+    locations:
+      - dimension: 主世界
+        coords: [-1490, 20, -151]
 
   # 独立站点
+  # 黑曜石农场
+  - name: 黑曜石农场地狱门
+    type: 地狱门
+    locations:
+      - dimension: 主世界
+        coords: [1320, 70, -2888]
+
+  # 袭击塔
+  - name: 袭击塔地狱门
+    type: 地狱门
+    locations:
+      - dimension: 主世界
+        coords: [-1280, 70, 1320]
+
+  # 鱼塔
+  - name: 鱼塔地狱门
+    type: 地狱门
+    locations:
+      - dimension: 主世界
+        coords: [1608, 70, -2056]
+
+  # 猪灵交易所
+  - name: 猪灵交易所地狱门
+    type: 地狱门
+    locations:
+      - dimension: 主世界
+        coords: [1199, 131, 940]
+
+  # 村民交易所
+  - name: 村民交易所地狱门
+    type: 地狱门
+    locations:
+      - dimension: 主世界
+        coords: [-1440, 70, 256]
+
+  # 主世界伪和平
+  - name: 主世界伪和平地狱门
+    type: 地狱门
+    locations:
+      - dimension: 主世界
+        coords: [-3760, 70, 472]
+
+  # 地狱工业
+  - name: 猪人塔地狱门
+    type: 地狱门
+    locations:
+      - dimension: 主世界
+        coords: [-3760, 70, 472]
+
+  # 地狱伪和平
+  - name: 地狱伪和平地狱门
+    type: 地狱门
+    locations:
+      - dimension: 主世界
+        coords: [1270, 111, 9410]

@@ -1,0 +1,91 @@
+# 地狱维度 - 农场类机器
+machines:
+  # TODO: 检查交通方式
+  - name: 疣猪兽农场
+    category: 农场
+    enabled: true
+    locations:
+      - dimension: 地狱
+        coords: [23, 128, -80]
+    products:
+      - 熟猪排
+      - 皮革
+    usage:
+    station:
+    contributors: wusanmaster
+    notes:
+    video_url:
+
+  # TODO: 坐标似乎不对
+  - name: 堆门猪人塔
+    category: 农场
+    enabled: true
+    locations:
+      - dimension: 地狱
+        coords: [145, 260, -2308]
+      - dimension: 主世界
+        coords: [-34, 128, -328]
+    products:
+      - 盒装金块
+    usage: >
+      地狱侧堆门最上面挂人。回到主世界侧，用亡灵杀手V + 横扫的钻石剑打假人。
+    station: 猪人塔地狱门
+    contributors: wusanmaster
+    notes: >
+      武器必须亡灵杀手V + 横扫，不能用锋利（锋利无法快速击杀猪灵），火焰，击退。
+      全套保护IV + 经验修补钻套。
+      记得带高饱食度食物。
+    video_url:
+
+  # TODO: 检查交通方式
+  - name: 恶魂塔
+    category: 农场
+    enabled: true
+    locations:
+      - dimension: 主世界
+        coords: [-2943, 195, -5140]
+      - dimension: 地狱
+        coords: [-368, 128, -605]
+    products:
+      - 恶魂之泪
+      - 火药
+    usage: >
+      地狱玻璃处挂人。主世界打开处死开关，然后打假人。
+    station:
+    contributors: wusanmaster
+    notes:
+    video_url:
+
+  # TODO: 检查交通方式
+  - name: 凋零骷髅农场
+    category: 农场
+    enabled: true
+    locations:
+      - dimension: 地狱
+        coords: [-1533, 183, -1157]
+    products:
+      - 盒装骨块
+      - 盒装煤炭块
+      - 盒装凋零骷髅头
+    usage: >
+      亡灵杀手 + 横扫打假人。
+    station:
+    contributors: wusanmaster
+    notes: >
+      无主世界坐标，仅地狱侧。
+    video_url:
+
+  - name: 杀凋机
+    category: 农场
+    enabled: true
+    products:
+      - 下界之星
+    locations:
+      - dimension: 地狱
+        coords: [-147, 113, 28]
+    usage: >
+      来到最下面对着活塞放灵魂沙。最上面箱子放凋零骷髅头颅。
+    station:
+    contributors: wusanmaster
+    notes:
+    video_url:

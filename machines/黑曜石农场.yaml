@@ -1,0 +1,17 @@
+machines:
+  - name: 黑曜石农场
+    category: 农场
+    enabled: true
+    locations:
+      - dimension: 主世界
+        coords: [2396, 123, -2865]
+      - dimension: 地狱
+        coords: [301, 132, -363]
+    products:
+      - 黑曜石
+    usage: >
+      来回都从地狱门 (165, 128, -361) 进入。打开地狱侧的开关。无需挂机。
+    station: 黑曜石农场地狱门
+    contributors: wusanmaster
+    notes:
+    video_url:

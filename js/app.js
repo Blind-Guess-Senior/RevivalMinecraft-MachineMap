@@ -411,7 +411,7 @@ const App = {
         // 机器数量
         ctx.fillStyle = '#aaa';
         ctx.font = '12px ' + getComputedStyle(document.body).fontFamily;
-        ctx.fillText(group.pts.length + '台机器', cx, cz + 16);
+        ctx.fillText(group.pts.length + '个设施', cx, cz + 16);
 
         rects.push({ sx: cx, sz: cz, r, isRegion: true, folder, machines: group.pts.map(p => p.machine) });
       }
@@ -897,7 +897,7 @@ const App = {
           if (hit.isRegion) {
             const regionInfo = this.regions[hit.folder];
             const name = regionInfo ? regionInfo.name : hit.folder;
-            tooltip.innerHTML = `<div class="tt-name">${this.escapeHtml(name)}</div><div class="tt-products">${hit.machines.length}台机器 — 点击放大</div>`;
+            tooltip.innerHTML = `<div class="tt-name">${this.escapeHtml(name)}</div><div class="tt-products">${hit.machines.length}个设施 — 点击放大</div>`;
           } else {
             const prods = (hit.machine.products || []).slice(0, 4).join('、');
             const more = (hit.machine.products || []).length > 4 ? '…' : '';
@@ -939,10 +939,17 @@ const App = {
       const hit = this.findMapMachine(e.clientX - rect.left, e.clientY - rect.top);
       if (!hit) return;
       if (hit.isRegion) {
-        // 点击区域：放大到能看到机器
+        // 点击区域：放大并居中到该区域
         this.MAP_SCALE = 0.6;
         this._panX = 0;
         this._panZ = 0;
+        const info = this.regions[hit.folder];
+        if (info && info.center) {
+          this.MAP_CENTER_X = info.center[0];
+          this.MAP_CENTER_Z = info.center[2];
+          this.activeDim = info.dimension || this.activeDim;
+          this.renderDimensionTabs();
+        }
         this.renderMap();
       } else {
         this.showDetail(hit.machine);

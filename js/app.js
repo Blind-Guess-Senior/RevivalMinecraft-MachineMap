@@ -388,7 +388,7 @@ const App = {
     }
 
     const rects = [];
-    const REGION_THRESHOLD = 0.7;
+    const REGION_THRESHOLD = 0.9;
 
     if (this.MAP_SCALE < REGION_THRESHOLD) {
       // --- 区域模式：有归属的画区域圆圈，散装机器画独立点 ---
@@ -504,9 +504,9 @@ const App = {
           if (!fp || !tp) continue;
           const style = this.ROUTE_STYLES[route.method] || { color: '#888', dash: [] };
           const nativeDim = NATIVE_DIM[route.method] || '主世界';
-          ctx.globalAlpha = this.activeDim === nativeDim ? 0.55 : 0.12;
+          ctx.globalAlpha = this.activeDim === nativeDim ? 0.55 : 0.25;
           ctx.strokeStyle = style.color;
-          ctx.lineWidth = 0.8;
+          ctx.lineWidth = 1.0;
           ctx.setLineDash(style.dash);
           ctx.beginPath(); ctx.moveTo(fp.sx, fp.sz); ctx.lineTo(tp.sx, tp.sz); ctx.stroke();
           ctx.setLineDash([]);
@@ -964,7 +964,7 @@ const App = {
       const [wx, wz] = this.canvasToWorld(mx, my, rect.width, rect.height);
 
       const zoom = e.deltaY < 0 ? 1.15 : 1 / 1.15;
-      const newScale = Math.min(5, Math.max(0.15, this.MAP_SCALE * zoom));
+      const newScale = Math.min(8, Math.max(0.15, this.MAP_SCALE * zoom));
       this.MAP_SCALE = newScale;
 
       const [nx, nz] = this.worldToCanvas(wx, wz, rect.width, rect.height);

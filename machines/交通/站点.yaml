@@ -2,50 +2,69 @@
 # type: 车站 / 地狱门 / 驿站 / 冰道站 / 港口 / 空港
 # 地狱门只存主世界坐标，地狱侧坐标自动计算（÷8）
 stations:
-  - name: 工业区地狱门
+  # 东南山
+  - name: 东南山地狱门
     type: 地狱门
+    region: 东南山
     locations:
       - dimension: 主世界
         coords: [-950, 70, 190]
 
+  - name: 东南山东驿站
+    type: 驿站
+    region: 东南山
+    locations:
+      - dimension: 主世界
+        coords: [-906, 66, 142]
+
+  - name: 东南山车站
+    type: 车站
+    region: 东南山
+    locations:
+      - dimension: 主世界
+        coords: [-960, 68, 200]
+
+  # 北二环
   - name: 北二环地狱门
     type: 地狱门
+    region: 北二环
     locations:
       - dimension: 主世界
         coords: [1199, 131, 940]
 
+  - name: 北二环车站
+    type: 车站
+    region: 北二环
+    locations:
+      - dimension: 主世界
+        coords: [1200, 70, 900]
+
+  # 主世界工业
   - name: 刷沙机地狱门
     type: 地狱门
+    region: 主世界工业
     locations:
       - dimension: 主世界
         coords: [-1490, 20, -151]
 
   - name: 黑曜石地狱门
     type: 地狱门
+    region: 主世界工业
     locations:
       - dimension: 主世界
         coords: [2396, 123, -2865]
 
   - name: 鱼塔地狱门
     type: 地狱门
+    region: 主世界工业
     locations:
       - dimension: 主世界
         coords: [1611, 144, -1725]
 
+  # 地狱工业
   - name: 堆门猪人塔地狱门
     type: 地狱门
+    region: 地狱工业
     locations:
       - dimension: 主世界
         coords: [-34, 128, -328]
-
-  - name: 工业区车站
-    type: 车站
-    locations:
-      - dimension: 主世界
-        coords: [-960, 68, 200]
-
-  - name: 北二环车站
-    type: 车站
-    locations:
-      - dimension: 主世界
-        coords: [1200, 70, 900]

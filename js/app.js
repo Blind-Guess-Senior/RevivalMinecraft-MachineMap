@@ -247,10 +247,26 @@ const App = {
   // === 图例 ===
   renderMapLegend() {
     const el = document.getElementById('map-legend');
-    el.innerHTML = this.CATEGORIES.map(cat => {
+    let html = this.CATEGORIES.map(cat => {
       const cls = this.CAT_KEYS[cat] || '';
       return `<span class="legend-item"><span class="legend-dot ${cls}"></span>${cat}</span>`;
     }).join('');
+
+    // 有站点数据时追加站点类型和线路
+    if (this.stations.length > 0) {
+      html += '<span class="legend-item" style="margin-left:8px;opacity:0.5">|</span>';
+      html += this.STATION_TYPES.filter(t => this.stations.some(s => s.type === t)).map(t =>
+        `<span class="legend-item"><span class="legend-dot" style="background:${this.STATION_COLORS[t]}"></span>${t}</span>`
+      ).join('');
+    }
+    if (this.routes.length > 0) {
+      html += this.ROUTE_METHODS.filter(rm => this.routes.some(r => r.method === rm)).map(rm => {
+        const s = this.ROUTE_STYLES[rm];
+        return `<span class="legend-item" style="color:${s.color}">${s.dash.length ? '--' : '—'} ${rm}</span>`;
+      }).join('');
+    }
+
+    el.innerHTML = html;
   },
 
   // === 计数 ===
@@ -368,7 +384,7 @@ const App = {
     }
 
     const rects = [];
-    const REGION_THRESHOLD = 0.5;
+    const REGION_THRESHOLD = 0.7;
 
     if (this.MAP_SCALE < REGION_THRESHOLD) {
       // --- 区域模式：有归属的画区域圆圈，散装机器画独立点 ---
@@ -440,6 +456,74 @@ const App = {
         ctx.fillText(p.machine.name, sx + dotR + 3, sz + 3);
         rects.push({ sx, sz, r: dotR + 3, machine: p.machine, x: p.x, z: p.z });
       }
+
+      // --- 交通覆盖层：站点在区域圆圈边缘 + 线路 ---
+      if (this.stations.length > 0) {
+        // 计算每个站点在对应区域圆圈边缘的位置
+        const stationPositions = {};
+        for (const s of this.stations) {
+          const regKey = s.region;
+          if (!regKey || !groups[regKey]) continue;
+          const grp = groups[regKey];
+          const info = grp.region;
+          // 站点真实坐标
+          const loc = (s.locations || []).find(l => l.dimension === this.activeDim) || s.locations[0];
+          if (!loc || !loc.coords) continue;
+          const [swx, swz] = [loc.coords[0], loc.coords[2]];
+          // 区域圆心（画布坐标）
+          let rcx, rcz;
+          if (info && info.center) {
+            [rcx, rcz] = this.worldToCanvas(info.center[0], info.center[2], w, h);
+          } else {
+            let sx = 0, sz = 0;
+            for (const p of grp.pts) { sx += p.x; sz += p.z; }
+            [rcx, rcz] = this.worldToCanvas(sx / grp.pts.length, sz / grp.pts.length, w, h);
+          }
+          // 区域半径
+          const rr = Math.max(18, 10 + grp.pts.length * 3);
+          // 站点在画布上的位置，以此计算相对区域圆心的角度
+          const [ssx, ssz] = this.worldToCanvas(swx, swz, w, h);
+          const angle = Math.atan2(rcx - ssx, rcz - ssz);
+          // 圆圈边缘位置
+          const esx = rcx - rr * Math.sin(angle);
+          const esz = rcz - rr * Math.cos(angle);
+          stationPositions[s.name] = { sx: esx, sz: esz, station: s, r: rr };
+        }
+
+        // 画线路
+        for (const route of this.routes) {
+          const fp = stationPositions[route.from];
+          const tp = stationPositions[route.to];
+          if (!fp || !tp) continue;
+          const style = this.ROUTE_STYLES[route.method] || { color: '#888', dash: [] };
+          ctx.strokeStyle = style.color;
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash(style.dash);
+          ctx.beginPath(); ctx.moveTo(fp.sx, fp.sz); ctx.lineTo(tp.sx, tp.sz); ctx.stroke();
+          ctx.setLineDash([]);
+        }
+
+        // 画站点图标在圆圈边缘
+        for (const [name, sp] of Object.entries(stationPositions)) {
+          const color = this.STATION_COLORS[sp.station.type] || '#888';
+          const icon = this.STATION_ICONS[sp.station.type] || '●';
+          const dotR = 5;
+          ctx.beginPath();
+          ctx.arc(sp.sx, sp.sz, dotR + 2, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(0,0,0,0.6)';
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(sp.sx, sp.sz, dotR, 0, Math.PI * 2);
+          ctx.fillStyle = color;
+          ctx.fill();
+          ctx.fillStyle = '#fff';
+          ctx.font = 'bold 7px ' + getComputedStyle(document.body).fontFamily;
+          ctx.textAlign = 'center';
+          ctx.fillText(icon, sp.sx, sp.sz + 2.5);
+          // 存储站点命中的 rect
+          rects.push({ sx: sp.sx, sz: sp.sz, r: dotR + 3, isStation: true, station: sp.station });
+        }
+      }
     } else {
       // --- 机器模式 ---
       const dotR = 7;
@@ -508,148 +592,6 @@ const App = {
       const dx = mx - r.sx;
       const dy = my - r.sz;
       if (dx * dx + dy * dy <= r.r * r.r) return r;
-    }
-    return null;
-  },
-
-  // ========================
-  //  交通图视图
-  // ========================
-  _transitRects: [],
-
-  renderTransit() {
-    const canvas = document.getElementById('transit-canvas');
-    const container = canvas.parentElement;
-    const dpr = window.devicePixelRatio || 1;
-    const w = container.clientWidth;
-    const h = container.clientHeight;
-    canvas.width = w * dpr;
-    canvas.height = h * dpr;
-    canvas.style.width = w + 'px';
-    canvas.style.height = h + 'px';
-
-    const ctx = canvas.getContext('2d');
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.fillStyle = '#12121e';
-    ctx.fillRect(0, 0, w, h);
-
-    const stations = this.stations;
-    const routes = this.routes;
-
-    if (stations.length === 0) {
-      ctx.fillStyle = '#666680';
-      ctx.font = '16px ' + getComputedStyle(document.body).fontFamily;
-      ctx.textAlign = 'center';
-      ctx.fillText('暂无交通数据', w / 2, h / 2);
-      this._transitRects = [];
-      return;
-    }
-
-    // 使用主世界坐标（所有站点都有主世界坐标或自动补全）
-    const nodes = stations.map(s => {
-      const loc = (s.locations || []).find(l => l.dimension === '主世界') || s.locations[0];
-      return { station: s, x: (loc.coords || [0, 0, 0])[0], z: (loc.coords || [0, 0, 0])[2] };
-    });
-
-    let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
-    for (const n of nodes) {
-      if (n.x < minX) minX = n.x; if (n.x > maxX) maxX = n.x;
-      if (n.z < minZ) minZ = n.z; if (n.z > maxZ) maxZ = n.z;
-    }
-    if (minX === maxX) { minX -= 50; maxX += 50; }
-    if (minZ === maxZ) { minZ -= 50; maxZ += 50; }
-
-    const padX = Math.max((maxX - minX) * 0.15, 40);
-    const padZ = Math.max((maxZ - minZ) * 0.15, 40);
-    minX -= padX; maxX += padX; minZ -= padZ; maxZ += padZ;
-
-    const m = { top: 40, right: 40, bottom: 40, left: 40 };
-    const scale = Math.min((w - m.left - m.right) / (maxX - minX), (h - m.top - m.bottom) / (maxZ - minZ));
-    const tx = (vx) => m.left + (vx - minX) * scale;
-    const tz = (vz) => m.top + (maxZ - vz) * scale;
-
-    // 绘制线路
-    for (const route of routes) {
-      const from = nodes.find(n => n.station.name === route.from);
-      const to = nodes.find(n => n.station.name === route.to);
-      if (!from || !to) continue;
-
-      const [fx, fz] = [tx(from.x), tz(from.z)];
-      const [tx2, tz2] = [tx(to.x), tz(to.z)];
-      const style = this.ROUTE_STYLES[route.method] || { color: '#888', dash: [] };
-
-      ctx.strokeStyle = style.color;
-      ctx.lineWidth = 2;
-      ctx.setLineDash(style.dash);
-      ctx.beginPath(); ctx.moveTo(fx, fz); ctx.lineTo(tx2, tz2); ctx.stroke();
-      ctx.setLineDash([]);
-
-      const mx2 = (fx + tx2) / 2, mz2 = (fz + tz2) / 2;
-      ctx.fillStyle = '#aaa';
-      ctx.font = '10px ' + getComputedStyle(document.body).fontFamily;
-      ctx.textAlign = 'center';
-      const label = [route.method, route.time].filter(Boolean).join(' ');
-      if (label) ctx.fillText(label, mx2, mz2 - 5);
-    }
-
-    // 绘制站点
-    const rects = [];
-    for (const n of nodes) {
-      const [sx, sz] = [tx(n.x), tz(n.z)];
-      const color = this.STATION_COLORS[n.station.type] || '#888';
-      const icon = this.STATION_ICONS[n.station.type] || '●';
-      const r = n.station.type === '地狱门' ? 10 : 7;
-
-      // 外圈
-      ctx.beginPath();
-      ctx.arc(sx, sz, r + 3, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(255,255,255,0.12)';
-      ctx.fill();
-
-      // 主体
-      ctx.beginPath();
-      ctx.arc(sx, sz, r, 0, Math.PI * 2);
-      ctx.fillStyle = color;
-      ctx.fill();
-
-      // 图标
-      ctx.fillStyle = '#fff';
-      ctx.font = 'bold 9px ' + getComputedStyle(document.body).fontFamily;
-      ctx.textAlign = 'center';
-      ctx.fillText(icon, sx, sz + 3);
-
-      // 名称
-      ctx.fillStyle = '#e4e4f0';
-      ctx.font = 'bold 12px ' + getComputedStyle(document.body).fontFamily;
-      ctx.textAlign = 'left';
-      ctx.fillText(n.station.name, sx + r + 6, sz + 5);
-
-      rects.push({ sx, sz, r: r + 4, station: n.station, x: n.x, z: n.z });
-    }
-    this._transitRects = rects;
-
-    // 图例
-    const legend = document.getElementById('transit-legend');
-    legend.innerHTML = `
-      <span class="legend-item" style="margin-right:16px;color:#aaa">站点</span>
-      ${this.STATION_TYPES.map(t =>
-        `<span class="legend-item"><span class="legend-dot" style="background:${this.STATION_COLORS[t]}"></span>${t}</span>`
-      ).join('')}
-      <span class="legend-item" style="margin-left:16px;color:#aaa">线路</span>
-      ${this.ROUTE_METHODS.map(rm => {
-        const s = this.ROUTE_STYLES[rm];
-        return `<span class="legend-item" style="color:${s.color}">${s.dash.length ? '---' : '———'} ${rm}</span>`;
-      }).join('')}
-    `;
-  },
-
-  findTransitNode(ex, ey) {
-    const canvas = document.getElementById('transit-canvas');
-    const rect = canvas.getBoundingClientRect();
-    const mx = ex / (rect.width / canvas.clientWidth);
-    const my = ey / (rect.height / canvas.clientHeight);
-    for (const r of this._transitRects) {
-      if ((mx - r.sx) ** 2 + (my - r.sz) ** 2 <= r.r ** 2) return r;
     }
     return null;
   },
@@ -849,8 +791,7 @@ const App = {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         document.getElementById('view-' + this.activeView).classList.add('active');
         if (this.activeView === 'map') this.renderMap();
-        if (this.activeView === 'transit') this.renderTransit();
-      });
+              });
     });
 
     // 搜索
@@ -919,7 +860,11 @@ const App = {
         if (hit) {
           canvas.style.cursor = 'pointer';
           tooltip.hidden = false;
-          if (hit.isRegion) {
+          if (hit.isStation) {
+            const s = hit.station;
+            const icon = this.STATION_ICONS[s.type] || '';
+            tooltip.innerHTML = `<div class="tt-name">${icon} ${this.escapeHtml(s.name)}</div><div class="tt-products">${s.type} — 点击定位</div>`;
+          } else if (hit.isRegion) {
             const regionInfo = this.regions[hit.folder];
             const name = regionInfo ? regionInfo.name : hit.folder;
             tooltip.innerHTML = `<div class="tt-name">${this.escapeHtml(name)}</div><div class="tt-products">${hit.machines.length}个设施 — 点击放大</div>`;
@@ -963,7 +908,20 @@ const App = {
       const rect = canvas.getBoundingClientRect();
       const hit = this.findMapMachine(e.clientX - rect.left, e.clientY - rect.top);
       if (!hit) return;
-      if (hit.isRegion) {
+      if (hit.isStation) {
+        // 点击站点：跳到该站点坐标并放大
+        const loc = (hit.station.locations || [])[0];
+        if (loc && loc.coords) {
+          this.MAP_SCALE = 1.0;
+          this._panX = 0;
+          this._panZ = 0;
+          this.MAP_CENTER_X = loc.coords[0];
+          this.MAP_CENTER_Z = loc.coords[2];
+          this.activeDim = loc.dimension || this.activeDim;
+          this.renderDimensionTabs();
+          this.renderMap();
+        }
+      } else if (hit.isRegion) {
         // 点击区域：放大并居中到该区域
         this.MAP_SCALE = 0.6;
         this._panX = 0;
@@ -1005,60 +963,6 @@ const App = {
 
       this.renderMap();
     }, { passive: false });
-
-    // 交通图交互
-    const transitCanvas = document.getElementById('transit-canvas');
-    const transitTooltip = document.getElementById('transit-tooltip');
-
-    transitCanvas.addEventListener('mousemove', (e) => {
-      const rect = transitCanvas.getBoundingClientRect();
-      const hit = this.findTransitNode(e.clientX - rect.left, e.clientY - rect.top);
-      if (hit) {
-        transitCanvas.style.cursor = 'pointer';
-        transitTooltip.hidden = false;
-        const s = hit.station;
-        const locs = (s.locations || []).map(l =>
-          `${l.dimension}: ${(l.coords||[]).join(', ')}`
-        ).join('<br>');
-        transitTooltip.innerHTML = `<div class="tt-name">${this.STATION_ICONS[s.type] || ''} ${this.escapeHtml(s.name)}</div><div class="tt-products">${locs}</div>`;
-        const csx = transitCanvas.clientWidth / (transitCanvas.width / (window.devicePixelRatio || 1));
-        const csy = transitCanvas.clientHeight / (transitCanvas.height / (window.devicePixelRatio || 1));
-        transitTooltip.style.left = (hit.sx * csx) + 'px';
-        transitTooltip.style.top = (hit.sz * csy) + 'px';
-      } else {
-        transitCanvas.style.cursor = 'default';
-        transitTooltip.hidden = true;
-      }
-    });
-
-    transitCanvas.addEventListener('click', (e) => {
-      const rect = transitCanvas.getBoundingClientRect();
-      const hit = this.findTransitNode(e.clientX - rect.left, e.clientY - rect.top);
-      if (hit) {
-        // 点击站点：跳到对应维度地图位置
-        const s = hit.station;
-        const loc = (s.locations || [])[0];
-        if (loc && loc.coords) {
-          this.activeDim = loc.dimension || '主世界';
-          this.MAP_SCALE = 1.0;
-          this.MAP_CENTER_X = loc.coords[0];
-          this.MAP_CENTER_Z = loc.coords[2];
-          this._panX = 0;
-          this._panZ = 0;
-          this.renderDimensionTabs();
-          this.renderMap();
-          document.querySelectorAll('.view-tab').forEach(b => b.classList.remove('active'));
-          document.querySelector('.view-tab[data-view="map"]').classList.add('active');
-          this.activeView = 'map';
-          document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-          document.getElementById('view-map').classList.add('active');
-        }
-      }
-    });
-
-    transitCanvas.addEventListener('mouseleave', () => {
-      transitTooltip.hidden = true;
-    });
 
     // 卡片点击
     document.getElementById('card-grid').addEventListener('click', (e) => {
@@ -1111,8 +1015,7 @@ const App = {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         if (this.activeView === 'map') this.renderMap();
-        if (this.activeView === 'transit') this.renderTransit();
-      }, 150);
+              }, 150);
     });
   }
 };

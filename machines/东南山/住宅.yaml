@@ -1,10 +1,16 @@
+# 东南山
+# 住宅
+
 machines:
-  - name: 地下基地
+  - name: 世难逃
     category: 家
     enabled: true
     locations:
       - dimension: 主世界
         coords: [-963, 60, 293]
-    owner: 盲猜派高层
     travel_method: 步行
-
+    station: 东南山
+    contributors: 盲猜派高层
+    owner: 盲猜派高层
+    notes:
+    video_url: https://www.bilibili.com/video/BV1Bt4y127D8

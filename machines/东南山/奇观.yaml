@@ -1,20 +1,36 @@
+# 东南山区域
+# 奇观
+
 machines:
+  - name: 桃源乡
+    category: 奇观
+    enabled: true
+    locations:
+      - dimension: 主世界
+        coords: [-961, 69, 155]
+    travel_method: 步行
+    station: 东南山
+    contributors: wusanmaster
+    notes:
+
   - name: 蕾塞像素画
     category: 奇观
     enabled: true
     locations:
       - dimension: 主世界
         coords: [-824, 64, 213]
-    owner: wusanmaster
     travel_method: 步行
+    station: 东南山
+    contributors: wusanmaster
     notes:
 
-  - name: 地球
+  - name: 微缩地球
     category: 奇观
     enabled: true
     locations:
       - dimension: 主世界
         coords: [-906, 170, 124]
-    owner: wusanmaster
     travel_method: 烟花鞘翅
+    station: 东南山
+    contributors: wusanmaster
     notes:

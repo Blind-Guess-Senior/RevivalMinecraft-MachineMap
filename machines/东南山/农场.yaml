@@ -1,4 +1,6 @@
-# 工业区 - 农场类机器
+# 东南山
+# 农场类机器
+
 machines:
   - name: 刷铁机
     category: 农场
@@ -68,15 +70,15 @@ machines:
     video_url:
     contributors:
 
-  - name: 羊毛机
+  - name: 16色羊毛机
     category: 农场
     enabled: true
-    products:
-      - 各色羊毛（散装）
-      - 各色羊毛（盒装）
     locations:
       - dimension: 主世界
         coords: [-978, 69, 247]
+    products:
+      - 16色羊毛 (散装)
+      - 16色羊毛 (单色打盒)
     usage: >
       从箱子里直接拿，有散装和盒装两种形式。
     travel_method: 地狱交通

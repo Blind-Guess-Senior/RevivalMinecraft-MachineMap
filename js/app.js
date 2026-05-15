@@ -497,16 +497,20 @@ const App = {
         }
 
         // 画线路
+        const NATIVE_DIM = { '地狱矿车': '地狱' };  // 不在此列的默认属于主世界
         for (const route of this.routes) {
           const fp = stationPositions[route.from];
           const tp = stationPositions[route.to];
           if (!fp || !tp) continue;
           const style = this.ROUTE_STYLES[route.method] || { color: '#888', dash: [] };
+          const nativeDim = NATIVE_DIM[route.method] || '主世界';
+          ctx.globalAlpha = this.activeDim === nativeDim ? 0.55 : 0.12;
           ctx.strokeStyle = style.color;
-          ctx.lineWidth = 1.5;
+          ctx.lineWidth = 0.8;
           ctx.setLineDash(style.dash);
           ctx.beginPath(); ctx.moveTo(fp.sx, fp.sz); ctx.lineTo(tp.sx, tp.sz); ctx.stroke();
           ctx.setLineDash([]);
+          ctx.globalAlpha = 1;
         }
 
         // 画站点图标在圆圈边缘

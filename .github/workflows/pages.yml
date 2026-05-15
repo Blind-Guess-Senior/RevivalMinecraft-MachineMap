@@ -21,6 +21,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: 生成 machines/files.json
+        run: |
+          cd machines
+          find . -name '*.yaml' -o -name '*.yml' | sort | sed 's/^\.\///' | jq -R -s 'split("\n") | map(select(length > 0))' > files.json
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
         with:

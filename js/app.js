@@ -34,23 +34,19 @@ const App = {
   CAT_KEYS: { '农场': 'farm', '工厂': 'factory', '功能性': 'utility', '家': 'home', '其他': 'other' },
   CAT_COLORS: { '农场': '#4caf50', '工厂': '#ff9800', '功能性': '#42a5f5', '家': '#ec407a', '其他': '#9e9e9e' },
 
-  // machines/ 目录下的所有 yaml 文件，新增文件在此加一行即可
-  MACHINE_FILES: [
-    '工业区/农场.yaml',
-    '工业区/工厂.yaml',
-    '地狱/农场.yaml',
-    '地狱/功能性.yaml',
-    '主世界/农场.yaml',
-    '主世界/功能性.yaml',
-    '末地/农场.yaml',
-    '家/全部.yaml',
-  ],
-
   // === 初始化 ===
   async init() {
     try {
+      // 加载构建时自动生成的文件清单
+      const manifestResp = await fetch('machines/files.json');
+      if (!manifestResp.ok) throw new Error(`files.json: HTTP ${manifestResp.status}`);
+      const files = await manifestResp.json();
+      if (!Array.isArray(files) || files.length === 0) {
+        throw new Error('machines/files.json 为空');
+      }
+
       const allMachines = [];
-      for (const file of this.MACHINE_FILES) {
+      for (const file of files) {
         try {
           const resp = await fetch('machines/' + file);
           if (!resp.ok) {

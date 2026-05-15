@@ -457,37 +457,38 @@ const App = {
         rects.push({ sx, sz, r: dotR + 3, machine: p.machine, x: p.x, z: p.z });
       }
 
-      // --- 交通覆盖层：站点在区域圆圈边缘 + 线路 ---
+      // --- 交通覆盖层：站点 + 线路 ---
       if (this.stations.length > 0) {
-        // 计算每个站点在对应区域圆圈边缘的位置
         const stationPositions = {};
         for (const s of this.stations) {
-          const regKey = s.region;
-          if (!regKey || !groups[regKey]) continue;
-          const grp = groups[regKey];
-          const info = grp.region;
-          // 站点真实坐标
           const loc = (s.locations || []).find(l => l.dimension === this.activeDim) || s.locations[0];
           if (!loc || !loc.coords) continue;
           const [swx, swz] = [loc.coords[0], loc.coords[2]];
-          // 区域圆心（画布坐标）
-          let rcx, rcz;
-          if (info && info.center) {
-            [rcx, rcz] = this.worldToCanvas(info.center[0], info.center[2], w, h);
+
+          const regKey = s.region;
+          if (regKey && groups[regKey]) {
+            // 有归属区域：画在区域圆圈边缘
+            const grp = groups[regKey];
+            const info = grp.region;
+            let rcx, rcz;
+            if (info && info.center) {
+              [rcx, rcz] = this.worldToCanvas(info.center[0], info.center[2], w, h);
+            } else {
+              let sx = 0, sz = 0;
+              for (const p of grp.pts) { sx += p.x; sz += p.z; }
+              [rcx, rcz] = this.worldToCanvas(sx / grp.pts.length, sz / grp.pts.length, w, h);
+            }
+            const rr = Math.max(18, 10 + grp.pts.length * 3);
+            const [ssx, ssz] = this.worldToCanvas(swx, swz, w, h);
+            const angle = Math.atan2(rcx - ssx, rcz - ssz);
+            const esx = rcx - rr * Math.sin(angle);
+            const esz = rcz - rr * Math.cos(angle);
+            stationPositions[s.name] = { sx: esx, sz: esz, station: s, r: rr };
           } else {
-            let sx = 0, sz = 0;
-            for (const p of grp.pts) { sx += p.x; sz += p.z; }
-            [rcx, rcz] = this.worldToCanvas(sx / grp.pts.length, sz / grp.pts.length, w, h);
+            // 无归属（散装站点）：画在实际坐标位置
+            const [sx, sz] = this.worldToCanvas(swx, swz, w, h);
+            stationPositions[s.name] = { sx, sz, station: s, r: 9 };
           }
-          // 区域半径
-          const rr = Math.max(18, 10 + grp.pts.length * 3);
-          // 站点在画布上的位置，以此计算相对区域圆心的角度
-          const [ssx, ssz] = this.worldToCanvas(swx, swz, w, h);
-          const angle = Math.atan2(rcx - ssx, rcz - ssz);
-          // 圆圈边缘位置
-          const esx = rcx - rr * Math.sin(angle);
-          const esz = rcz - rr * Math.cos(angle);
-          stationPositions[s.name] = { sx: esx, sz: esz, station: s, r: rr };
         }
 
         // 画线路

@@ -10,7 +10,6 @@ machines:
       - 圆石
     usage: >
       打开开关。
-    travel_method: 步行
     station: 东南山
     contributors: wusanmaster
     notes: >
@@ -28,7 +27,6 @@ machines:
       - 烧炼产物
     usage: >
       原料放入铁轨上面的箱子。机器开关在地狱门加载器旁边，向下为开启。
-    travel_method: 步行
     station: 东南山
     contributors: wusanmaster
     notes: >

@@ -8,7 +8,6 @@ machines:
     locations:
       - dimension: 主世界
         coords: [-961, 69, 155]
-    travel_method: 步行
     station: 东南山
     contributors: wusanmaster
     notes:
@@ -19,7 +18,6 @@ machines:
     locations:
       - dimension: 主世界
         coords: [-824, 64, 213]
-    travel_method: 步行
     station: 东南山
     contributors: wusanmaster
     notes:
@@ -30,7 +28,6 @@ machines:
     locations:
       - dimension: 主世界
         coords: [-906, 170, 124]
-    travel_method: 烟花鞘翅
     station: 东南山
     contributors: wusanmaster
     notes:

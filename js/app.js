@@ -139,10 +139,11 @@ const App = {
         if (sData && Array.isArray(sData.stations)) {
           // 地狱门自动补全地狱侧坐标
           for (const s of sData.stations) {
+            if (!s.name || !s.locations) continue;
             if (s.type === '地狱门') {
-              const ow = (s.locations || []).find(l => l.dimension === '主世界');
+              const ow = s.locations.find(l => l.dimension === '主世界');
               if (ow && ow.coords) {
-                const exists = (s.locations || []).some(l => l.dimension === '地狱');
+                const exists = s.locations.some(l => l.dimension === '地狱');
                 if (!exists) {
                   s.locations.push({
                     dimension: '地狱',
@@ -179,7 +180,7 @@ const App = {
         m.owner || '',
         m.usage || '',
         m.notes || '',
-        m.travel_method || '',
+        m.station || '',
         ...(m.locations || []).map(l => l.dimension + ' ' + (l.coords || []).join(' '))
       ].join(' ').toLowerCase();
       return hay.includes(q);
@@ -464,7 +465,8 @@ const App = {
       if (this.stations.length > 0) {
         const stationPositions = {};
         for (const s of this.stations) {
-          const loc = (s.locations || []).find(l => l.dimension === this.activeDim) || s.locations[0];
+          if (!s.name || !s.locations || s.locations.length === 0) continue;
+          const loc = s.locations.find(l => l.dimension === this.activeDim) || s.locations[0];
           if (!loc || !loc.coords) continue;
           const [swx, swz] = [loc.coords[0], loc.coords[2]];
 
@@ -627,7 +629,7 @@ const App = {
         ? (m.owner ? `<span class="card-prod-tag">👤 ${this.escapeHtml(m.owner)}</span>` : (m.notes ? `<span class="card-usage">${this.escapeHtml(m.notes)}</span>` : ''))
         : (m.products || []).map(p => `<span class="card-prod-tag">${p}</span>`).join('');
 
-      const travel = m.travel_method ? `<div class="card-travel">🚪 ${this.escapeHtml(m.travel_method)}${m.station ? ' → ' + this.escapeHtml(m.station) : ''}</div>` : '';
+      const travel = m.station ? `<div class="card-travel">🚏 ${this.escapeHtml(m.station)}</div>` : '';
 
       const video = m.video_url ? `<a class="card-video" href="${this.escapeHtml(m.video_url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">📺 教程视频</a>` : '';
 
@@ -682,7 +684,7 @@ const App = {
       const prods = isLandmark
         ? (m.owner ? '👤 ' + this.escapeHtml(m.owner) : '')
         : (m.products || []).join('、');
-      const travel = m.travel_method || '';
+      const travel = m.station || '';
 
       return `
         <tr${disabled} data-idx="${i}">
@@ -710,8 +712,8 @@ const App = {
       `<div>📍 <strong>${l.dimension}</strong>：<span class="modal-value mono">${(l.coords||[]).join(', ')}</span></div>`
     ).join('');
 
-    const travel = machine.travel_method
-      ? `<div class="modal-section"><div class="modal-label">前往方式</div><div class="modal-value">${this.escapeHtml(machine.travel_method)}${machine.station ? ' → 🚏 ' + this.escapeHtml(machine.station) : ''}</div></div>`
+    const travel = machine.station
+      ? `<div class="modal-section"><div class="modal-label">最近站点</div><div class="modal-value">🚏 ${this.escapeHtml(machine.station)}</div></div>`
       : '';
 
     const status = machine.enabled === false

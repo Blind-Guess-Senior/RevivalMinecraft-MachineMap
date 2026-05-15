@@ -8,7 +8,6 @@ machines:
     locations:
       - dimension: 主世界
         coords: [-963, 60, 293]
-    travel_method: 步行
     station: 东南山
     contributors: 盲猜派高层
     owner: 盲猜派高层

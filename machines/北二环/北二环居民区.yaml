@@ -5,7 +5,7 @@ machines:
     locations:
       - dimension: 主世界
         coords: [-461, 64, 134]
-    travel_method: 步行
     station: 北二环
     contributors: rele
     owner: rele
+    notes:

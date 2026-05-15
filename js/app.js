@@ -51,7 +51,7 @@ const App = {
   // 地图常量
   MAP_CENTER_X: -955,
   MAP_CENTER_Z: 192,
-  MAP_SCALE: 1.0,
+  MAP_SCALE: 0.6,
 
   // 分类定义
   CATEGORIES: ['农场', '工厂', '功能性', '家', '奇观', '其他'],
@@ -927,7 +927,7 @@ const App = {
         }
       } else if (hit.isRegion) {
         // 点击区域：放大并居中到该区域
-        this.MAP_SCALE = 0.6;
+        this.MAP_SCALE = 0.8;
         this._panX = 0;
         this._panZ = 0;
         const info = this.regions[hit.folder];

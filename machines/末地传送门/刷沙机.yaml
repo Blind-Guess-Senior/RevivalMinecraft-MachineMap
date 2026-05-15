@@ -1,0 +1,25 @@
+machines:
+  - name: 刷沙机
+    category: 工厂
+    enabled: true
+    locations:
+      - dimension: 主世界
+        coords: [-1490, 20, -151]
+      - dimension: 地狱
+        coords: [-187, 128, -18]
+    products:
+      - 沙子
+      - 沙砾
+      - 混凝土粉末
+      - 铁砧
+      - 其余重力方块
+    usage: >
+      先在末地侧挂个人。主世界打开地狱门加载器。进入末地后打开收集开关即可。支持热切换。
+    notes: >
+      同时也是末地入口。
+      进入末地前必须携带烟花鞘翅！
+      不抗卸载，人走关机。
+    travel_method: 地狱交通
+    station: 末地入口
+    contributors: wusanmaster
+    video_url:

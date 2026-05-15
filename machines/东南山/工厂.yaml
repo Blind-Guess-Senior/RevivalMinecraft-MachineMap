@@ -3,31 +3,35 @@ machines:
   - name: 刷石机
     category: 工厂
     enabled: true
-    products:
-      - 圆石
-      - 石头
     locations:
       - dimension: 主世界
         coords: [-923, 67, 141]
+    products:
+      - 圆石
     usage: >
       打开开关。
     travel_method: 步行
-    notes: 理论上抗卸载。确保每周一服务器停机备份时处于关机状态。
+    station: 东南山
+    contributors: wusanmaster
+    notes: >
+      理论上抗卸载。
+      确保每周一服务器停机备份时处于关机状态。
     video_url:
-    contributors:
 
   - name: 192熔炉组
     category: 工厂
     enabled: true
-    products:
-      - 烧炼产物
     locations:
       - dimension: 主世界
         coords: [-955, 68, 192]
+    products:
+      - 烧炼产物
     usage: >
       原料放入铁轨上面的箱子。机器开关在地狱门加载器旁边，向下为开启。
-    notes: 
     travel_method: 步行
-    video_url:
+    station: 东南山
     contributors: wusanmaster
-
+    notes: >
+      抗卸载。
+      确保每周一服务器停机备份时处于关机或已完成状态。
+    video_url:

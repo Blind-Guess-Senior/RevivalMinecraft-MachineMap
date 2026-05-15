@@ -81,7 +81,8 @@ const App = {
           const text = await resp.text();
           const data = jsyaml.load(text);
           if (data && Array.isArray(data.machines)) {
-            const folder = file.split('/')[0];
+            // 根目录下的 yaml 不属于任何区域，_folder 为空
+            const folder = file.includes('/') ? file.split('/')[0] : null;
             for (const m of data.machines) {
               m._folder = folder;
             }
@@ -370,10 +371,18 @@ const App = {
     const REGION_THRESHOLD = 0.5;
 
     if (this.MAP_SCALE < REGION_THRESHOLD) {
-      // --- 区域模式：显示区域圆圈 ---
-      const groups = {};
+      // --- 区域模式：有归属的画区域圆圈，散装机器画独立点 ---
+      const grouped = [];   // 有 _folder 的
+      const loose = [];     // 无 _folder 的
       for (const p of pts) {
-        const folder = p.machine._folder || '其他';
+        if (p.machine._folder) grouped.push(p);
+        else loose.push(p);
+      }
+
+      // 区域圆圈
+      const groups = {};
+      for (const p of grouped) {
+        const folder = p.machine._folder;
         if (!groups[folder]) groups[folder] = { pts: [], region: this.regions[folder] };
         groups[folder].pts.push(p);
       }
@@ -384,7 +393,6 @@ const App = {
         if (info && info.center) {
           [cx, cz] = this.worldToCanvas(info.center[0], info.center[2], w, h);
         } else {
-          // 无区域数据：按机器坐标取平均
           let sx = 0, sz = 0;
           for (const p of group.pts) { sx += p.x; sz += p.z; }
           [cx, cz] = this.worldToCanvas(sx / group.pts.length, sz / group.pts.length, w, h);
@@ -393,7 +401,6 @@ const App = {
         const r = Math.max(18, 10 + group.pts.length * 3);
         const name = info ? info.name : folder;
 
-        // 区域圆圈
         ctx.beginPath();
         ctx.arc(cx, cz, r, 0, Math.PI * 2);
         ctx.fillStyle = 'rgba(255,255,255,0.08)';
@@ -402,18 +409,36 @@ const App = {
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
-        // 区域名称
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 14px ' + getComputedStyle(document.body).fontFamily;
         ctx.textAlign = 'center';
         ctx.fillText(name, cx, cz - 4);
 
-        // 机器数量
         ctx.fillStyle = '#aaa';
         ctx.font = '12px ' + getComputedStyle(document.body).fontFamily;
         ctx.fillText(group.pts.length + '个设施', cx, cz + 16);
 
         rects.push({ sx: cx, sz: cz, r, isRegion: true, folder, machines: group.pts.map(p => p.machine) });
+      }
+
+      // 散装机器：画独立小点
+      for (const p of loose) {
+        const [sx, sz] = this.worldToCanvas(p.x, p.z, w, h);
+        const color = this.CAT_COLORS[p.machine.category] || '#9e9e9e';
+        const dotR = 5;
+        ctx.beginPath();
+        ctx.arc(sx, sz, dotR + 1, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.15)';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(sx, sz, dotR, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.fillStyle = '#e4e4f0';
+        ctx.font = 'bold 10px ' + getComputedStyle(document.body).fontFamily;
+        ctx.textAlign = 'left';
+        ctx.fillText(p.machine.name, sx + dotR + 3, sz + 3);
+        rects.push({ sx, sz, r: dotR + 3, machine: p.machine, x: p.x, z: p.z });
       }
     } else {
       // --- 机器模式 ---

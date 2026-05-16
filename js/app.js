@@ -667,6 +667,7 @@ const App = {
       const travel = m.station ? `<div class="card-travel">🚏 ${this.escapeHtml(m.station)}</div>` : '';
 
       const video = m.video_url ? `<a class="card-video" href="${this.escapeHtml(m.video_url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">📺 教程视频</a>` : '';
+      const contrib = m.contributors ? `<div class="card-contrib">👤 ${this.escapeHtml(m.contributors)}</div>` : '';
 
       return `
         <div class="card ${catKey}${disabled}" data-idx="${this.filtered.indexOf(m)}">
@@ -677,6 +678,7 @@ const App = {
           <div class="card-locations">${locs}</div>
           ${prods ? `<div class="card-products">${prods}</div>` : ''}
           ${travel}
+          ${contrib}
           ${m.usage ? `<div class="card-usage">${this.escapeHtml(m.usage)}</div>` : ''}
           ${video}
         </div>`;
@@ -775,6 +777,9 @@ const App = {
     const video = machine.video_url
       ? `<a class="modal-video" href="${this.escapeHtml(machine.video_url)}" target="_blank" rel="noopener">📺 相关链接</a>`
       : '';
+    const contrib = machine.contributors
+      ? `<div class="modal-section"><div class="modal-label">贡献者</div><div class="modal-value">${this.escapeHtml(machine.contributors)}</div></div>`
+      : '';
 
     content.innerHTML = `
       <div class="modal-header">
@@ -783,6 +788,7 @@ const App = {
       </div>
       <div class="modal-section"><div class="modal-label">状态</div><div class="modal-value">${status}</div></div>
       <div class="modal-section"><div class="modal-label">位置</div><div class="modal-value">${locs}</div></div>
+      ${contrib}
       ${travel}
       ${extra}
       ${notes ? `<div class="modal-section">${notes}</div>` : ''}

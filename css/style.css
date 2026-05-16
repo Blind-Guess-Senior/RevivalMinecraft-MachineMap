@@ -381,10 +381,10 @@ body {
   overflow: hidden;
   line-height: 1.5;
 }
-.card-travel {
+.card-travel, .card-contrib {
   font-size: 0.8rem;
   color: var(--text-secondary);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .card-video {

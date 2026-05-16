@@ -7,6 +7,10 @@ routes:
     method: 矿车
     time:
 
+  - stops: [东南山 南站, 南河湾, 向阳站, 海南]
+    method: 矿车
+    time:
+
   # 地狱矿车交通
   - from: 东南山 地狱门
     to: 末地传送门 地狱门

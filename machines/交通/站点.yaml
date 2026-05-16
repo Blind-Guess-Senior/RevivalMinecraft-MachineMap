@@ -24,6 +24,13 @@ stations:
       - dimension: 主世界
         coords: [-916, 68, 156]
 
+  - name: 东南山 南站
+    type: 车站
+    region: 东南山
+    locations:
+      - dimension: 主世界
+        coords: [-916, 68, 156]
+
   # 北二环
   - name: 北二环 地狱门
     type: 地狱门
@@ -62,6 +69,25 @@ stations:
         coords: [-1490, 20, -151]
 
   # 独立站点
+  - name: 南河湾
+    type: 车站
+    locations:
+      - dimension: 主世界
+        coords: [-960, 65, 1060]
+
+  - name: 向阳站
+    type: 车站
+    locations:
+      - dimension: 主世界
+        coords: [-1345, 65, 1050]
+
+  - name: 海南
+    type: 车站
+    locations:
+      - dimension: 主世界
+        coords: [-1350, 65, 1560]
+
+  # 独立机器站点
   # 黑曜石农场
   - name: 黑曜石农场地狱门
     type: 地狱门

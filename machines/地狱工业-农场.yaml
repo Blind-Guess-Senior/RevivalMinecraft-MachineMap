@@ -1,6 +1,5 @@
 # 地狱维度 - 农场类机器
 machines:
-  # TODO: 检查交通方式
   - name: 疣猪兽农场
     category: 农场
     enabled: true
@@ -37,7 +36,6 @@ machines:
       记得带高饱食度食物。
     video_url:
 
-  # TODO: 检查交通方式
   - name: 恶魂塔
     category: 农场
     enabled: true
@@ -49,6 +47,7 @@ machines:
     products:
       - 恶魂之泪
       - 火药
+      - 经验
     usage: >
       地狱玻璃处挂人。主世界打开处死开关，然后打假人。
     station:
@@ -56,7 +55,6 @@ machines:
     notes:
     video_url:
 
-  # TODO: 检查交通方式
   - name: 凋零骷髅农场
     category: 农场
     enabled: true
@@ -67,6 +65,7 @@ machines:
       - 盒装骨块
       - 盒装煤炭块
       - 盒装凋零骷髅头
+      - 经验
     usage: >
       亡灵杀手 + 横扫打假人。
     station:

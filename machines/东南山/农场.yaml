@@ -96,8 +96,11 @@ machines:
         coords: [-983, 69, 264]
     products:
       - 仙人掌
+      - 绿色染料
+      - 经验
     usage: >
       箱子取用。
+      下方熔炉烧炼绿色染料，拿走即可获取经验。
     station: 东南山
     contributors: 盲猜派高层
     notes:

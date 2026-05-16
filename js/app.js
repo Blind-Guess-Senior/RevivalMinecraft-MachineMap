@@ -497,18 +497,49 @@ const App = {
         }
 
         // 画线路
-        const NATIVE_DIM = { '地狱矿车': '地狱' };  // 不在此列的默认属于主世界
+        const NATIVE_DIM = { '地狱矿车': '地狱' };
         for (const route of this.routes) {
-          const fp = stationPositions[route.from];
-          const tp = stationPositions[route.to];
-          if (!fp || !tp) continue;
           const style = this.ROUTE_STYLES[route.method] || { color: '#888', dash: [] };
           const nativeDim = NATIVE_DIM[route.method] || '主世界';
           ctx.globalAlpha = this.activeDim === nativeDim ? 0.55 : 0.25;
           ctx.strokeStyle = style.color;
           ctx.lineWidth = 1.0;
           ctx.setLineDash(style.dash);
-          ctx.beginPath(); ctx.moveTo(fp.sx, fp.sz); ctx.lineTo(tp.sx, tp.sz); ctx.stroke();
+
+          // stops 数组 → 多站折线；from/to → 单线段
+          const pts = [];
+          if (route.stops && route.stops.length >= 2) {
+            for (const name of route.stops) {
+              const sp = stationPositions[name];
+              if (!sp) { pts.length = 0; break; }
+              pts.push(sp);
+            }
+          } else {
+            const fp = stationPositions[route.from];
+            const tp = stationPositions[route.to];
+            if (fp && tp) pts.push(fp, tp);
+          }
+
+          if (pts.length >= 2) {
+            ctx.beginPath();
+            ctx.moveTo(pts[0].sx, pts[0].sz);
+            for (let i = 1; i < pts.length; i++) {
+              ctx.lineTo(pts[i].sx, pts[i].sz);
+            }
+            ctx.stroke();
+
+            // 标签放在线路中点
+            const mid = Math.floor(pts.length / 2);
+            const label = [route.method, route.time].filter(Boolean).join(' ');
+            if (label) {
+              ctx.globalAlpha = 1;
+              ctx.fillStyle = '#999';
+              ctx.font = '10px ' + getComputedStyle(document.body).fontFamily;
+              ctx.textAlign = 'center';
+              ctx.fillText(label, pts[mid].sx, pts[mid].sz - 6);
+            }
+          }
+
           ctx.setLineDash([]);
           ctx.globalAlpha = 1;
         }

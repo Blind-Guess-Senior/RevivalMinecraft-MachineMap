@@ -10,6 +10,7 @@ machines:
       - 熟猪排
       - 皮革
     usage:
+    opmode: 全自动
     station:
     contributors: wusanmaster
     notes:
@@ -28,6 +29,7 @@ machines:
       - 盒装金块
     usage: >
       地狱侧堆门最上面挂人。回到主世界侧，用亡灵杀手V + 横扫的钻石剑打假人。
+    opmode: 手动
     station: 猪人塔地狱门
     contributors: wusanmaster
     notes: >
@@ -50,6 +52,7 @@ machines:
       - 经验
     usage: >
       地狱玻璃处挂人。主世界打开处死开关，然后打假人。
+    opmode: 手动
     station:
     contributors: wusanmaster
     notes:
@@ -68,10 +71,10 @@ machines:
       - 经验
     usage: >
       亡灵杀手 + 横扫打假人。
+    opmode: 手动
     station:
     contributors: wusanmaster
-    notes: >
-      无主世界坐标，仅地狱侧。
+    notes:
     video_url:
 
   - name: 杀凋机
@@ -84,6 +87,7 @@ machines:
         coords: [-147, 113, 28]
     usage: >
       来到最下面对着活塞放灵魂沙。最上面箱子放凋零骷髅头颅。
+    opmode:
     station:
     contributors: wusanmaster
     notes:

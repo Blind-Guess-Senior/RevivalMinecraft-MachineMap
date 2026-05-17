@@ -27,11 +27,11 @@ const App = {
   ROUTE_METHODS: ['矿车', '地狱矿车', '马道', '冰道', '水路', '空路'],
   ROUTE_STYLES: {
     '矿车': { color: '#ffb432', dash: [10, 5] },
-    '地狱矿车':   { color: '#e040fb', dash: [8, 4] },
-    '马道':       { color: '#8d6e63', dash: [] },
-    '冰道':       { color: '#4fc3f7', dash: [3, 3] },
-    '水路':       { color: '#1e88e5', dash: [2, 6] },
-    '空路':       { color: '#e0e0e0', dash: [1, 8] }
+    '地狱矿车': { color: '#e040fb', dash: [8, 4] },
+    '马道': { color: '#8d6e63', dash: [] },
+    '冰道': { color: '#4fc3f7', dash: [3, 3] },
+    '水路': { color: '#1e88e5', dash: [2, 6] },
+    '空路': { color: '#e0e0e0', dash: [1, 8] }
   },
 
   // 维度缩放 (地狱 1 格 = 主世界 8 格)
@@ -57,6 +57,7 @@ const App = {
   CATEGORIES: ['农场', '工厂', '功能性', '家', '奇观', '其他'],
   CAT_KEYS: { '农场': 'farm', '工厂': 'factory', '功能性': 'utility', '家': 'home', '奇观': 'wonder', '其他': 'other' },
   CAT_COLORS: { '农场': '#4caf50', '工厂': '#ff9800', '功能性': '#42a5f5', '家': '#ec407a', '奇观': '#f4b400', '其他': '#9e9e9e' },
+  CAT_ICONS: { '农场': '🌾', '工厂': '🏭', '功能性': '🔧', '家': '🏠', '奇观': '🏛️', '其他': '📌' },
 
   // === 初始化 ===
   async init() {
@@ -195,9 +196,9 @@ const App = {
     this.filtered.sort((a, b) => {
       let va, vb;
       switch (field) {
-        case 'name':     va = a.name; vb = b.name; break;
+        case 'name': va = a.name; vb = b.name; break;
         case 'category': va = a.category; vb = b.category; break;
-        case 'enabled':  va = a.enabled !== false ? 1 : 0; vb = b.enabled !== false ? 1 : 0; break;
+        case 'enabled': va = a.enabled !== false ? 1 : 0; vb = b.enabled !== false ? 1 : 0; break;
         case 'dimension': va = (a.locations || [{}])[0].dimension || ''; vb = (b.locations || [{}])[0].dimension || ''; break;
         default: va = a.name; vb = b.name;
       }
@@ -225,7 +226,7 @@ const App = {
     el.innerHTML = this.CATEGORIES.map(cat => {
       const active = this.activeCats.has(cat) ? ' active' : '';
       const cls = this.CAT_KEYS[cat] || '';
-      return `<button class="cat-chip ${cls}${active}" data-cat="${cat}">${cat} (${counts[cat]})</button>`;
+      return `<button class="cat-chip ${cls}${active}" data-cat="${cat}">${this.CAT_ICONS[cat] || ''} ${cat} (${counts[cat]})</button>`;
     }).join('');
   },
 
@@ -251,7 +252,7 @@ const App = {
     const el = document.getElementById('map-legend');
     let html = this.CATEGORIES.map(cat => {
       const cls = this.CAT_KEYS[cat] || '';
-      return `<span class="legend-item"><span class="legend-dot ${cls}"></span>${cat}</span>`;
+      return `<span class="legend-item"><span class="legend-dot ${cls}"></span>${this.CAT_ICONS[cat] || ''} ${cat}</span>`;
     }).join('');
 
     // 有站点数据时追加站点类型和线路
@@ -531,7 +532,7 @@ const App = {
 
             // 标签放在线路中点
             const mid = Math.floor(pts.length / 2);
-            const label = [route.method, route.time].filter(Boolean).join(' ');
+            const label = [route.time].filter(Boolean).join(' ');
             if (label) {
               ctx.globalAlpha = 1;
               ctx.fillStyle = '#999';
@@ -658,7 +659,7 @@ const App = {
       const isLandmark = m.category === '家' || m.category === '奇观';
 
       const locs = (m.locations || []).map(l =>
-        `<div><span class="card-loc-dim">${l.dimension}</span> <span class="card-loc-coords">${(l.coords||[]).join(', ')}</span></div>`
+        `<div><span class="card-loc-dim">${l.dimension}</span> <span class="card-loc-coords">${(l.coords || []).join(', ')}</span></div>`
       ).join('');
 
       const prods = isLandmark
@@ -675,7 +676,7 @@ const App = {
         <div class="card ${catKey}${disabled}" data-idx="${this.filtered.indexOf(m)}">
           <div class="card-header">
             <span class="card-name">${this.escapeHtml(m.name)}</span>
-            <span class="card-badge ${catKey}">${m.category}</span>
+            <span class="card-badge ${catKey}">${this.CAT_ICONS[m.category] || ''} ${m.category}</span>
           </div>
           <div class="card-locations">${locs}</div>
           ${prods ? `<div class="card-products">${prods}</div>` : ''}
@@ -718,7 +719,7 @@ const App = {
         ? '<span class="status-dot off"></span>停用'
         : '<span class="status-dot on"></span>正常';
       const locs = (m.locations || []).map(l =>
-        `<div>${l.dimension}: ${(l.coords||[]).join(', ')}</div>`
+        `<div>${l.dimension}: ${(l.coords || []).join(', ')}</div>`
       ).join('');
       const isLandmark = m.category === '家' || m.category === '奇观';
       const prods = isLandmark
@@ -729,8 +730,8 @@ const App = {
       return `
         <tr${disabled} data-idx="${i}">
           <td class="td-name">${this.escapeHtml(m.name)}</td>
-          <td>${m.category}</td>
-          <td>${(m.locations||[]).map(l=>l.dimension).join(' / ')}</td>
+          <td>${this.CAT_ICONS[m.category] || ''} ${m.category}</td>
+          <td>${(m.locations || []).map(l => l.dimension).join(' / ')}</td>
           <td class="td-coords">${locs}</td>
           <td class="td-products">${prods}</td>
           <td>${this.escapeHtml(travel)}</td>
@@ -749,7 +750,7 @@ const App = {
     const isLandmark = machine.category === '家' || machine.category === '奇观';
 
     const locs = (machine.locations || []).map(l =>
-      `<div>📍 <strong>${l.dimension}</strong>：<span class="modal-value mono">${(l.coords||[]).join(', ')}</span></div>`
+      `<div>📍 <strong>${l.dimension}</strong>：<span class="modal-value mono">${(l.coords || []).join(', ')}</span></div>`
     ).join('');
 
     const travel = machine.station
@@ -790,7 +791,7 @@ const App = {
     content.innerHTML = `
       <div class="modal-header">
         <span class="modal-name">${this.escapeHtml(machine.name)}</span>
-        <span class="modal-badge ${catKey}">${machine.category}</span>
+        <span class="modal-badge ${catKey}">${this.CAT_ICONS[machine.category] || ''} ${machine.category}</span>
       </div>
       <div class="modal-section"><div class="modal-label">状态</div><div class="modal-value">${status}</div></div>
       <div class="modal-section"><div class="modal-label">位置</div><div class="modal-value">${locs}</div></div>
@@ -845,7 +846,7 @@ const App = {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         document.getElementById('view-' + this.activeView).classList.add('active');
         if (this.activeView === 'map') this.renderMap();
-              });
+      });
     });
 
     // 搜索
@@ -966,7 +967,7 @@ const App = {
         // 点击站点：跳到该站点坐标并放大
         const loc = (hit.station.locations || [])[0];
         if (loc && loc.coords) {
-          this.MAP_SCALE = 1.0;
+          this.MAP_SCALE = REGION_THRESHOLD * 1.2;
           this._panX = 0;
           this._panZ = 0;
           this.MAP_CENTER_X = loc.coords[0];
@@ -977,7 +978,7 @@ const App = {
         }
       } else if (hit.isRegion) {
         // 点击区域：放大并居中到该区域
-        this.MAP_SCALE = 0.8;
+        this.MAP_SCALE = REGION_THRESHOLD * 1.2;
         this._panX = 0;
         this._panZ = 0;
         const info = this.regions[hit.folder];
@@ -1069,7 +1070,7 @@ const App = {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         if (this.activeView === 'map') this.renderMap();
-              }, 150);
+      }, 150);
     });
   }
 };

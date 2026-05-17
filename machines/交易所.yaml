@@ -18,6 +18,7 @@ machines:
       - 光灵箭
     usage: >
       箱子里放入盒装金块，打开箱子旁边的开关。
+    opmode: 手动
     station: 猪灵交易所地狱门
     contributors: wusanmaster
     notes:
@@ -35,6 +36,7 @@ machines:
       - dimension: 地狱
         coords: [-180, 128, 32]
     usage:
+    opmode: 手动
     station: 村民交易所地狱门
     contributors: wusanmaster
     notes:

@@ -11,6 +11,7 @@ machines:
       - 黑曜石
     usage: >
       来回都从地狱门 (165, 128, -361) 进入。打开地狱侧的开关。无需挂机。
+    opmode: 开关式全自动
     station: 黑曜石农场地狱门
     contributors: wusanmaster
     notes:

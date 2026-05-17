@@ -20,6 +20,7 @@ machines:
       - 经验
     usage: >
       发射器中拿等级为2的灾厄药水喝下。打开开关。使用横扫锋利经验修补的钻石剑 (不可用击退和火焰附加) 打假人。如果袭击源源不断则开机成功。
+    opmode: 手动
     station: 袭击塔地狱门
     contributors: wusanmaster
     notes: >

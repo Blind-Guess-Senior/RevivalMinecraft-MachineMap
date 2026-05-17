@@ -21,6 +21,7 @@ machines:
       - 红石粉
     usage: >
       通过水电梯到最上方挂机。
+    opmode: 需挂机
     station:
     contributors: wusanmaster
     notes:

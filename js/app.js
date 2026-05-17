@@ -34,9 +34,6 @@ const App = {
     '空路': { color: '#e0e0e0', dash: [1, 8] }
   },
 
-  // 维度缩放 (地狱 1 格 = 主世界 8 格)
-  DIM_SCALE: { '主世界': 1, '地狱': 8, '末地': 1 },
-
   // 地图状态
   _mapRects: [],
   _panX: 0,
@@ -282,11 +279,8 @@ const App = {
   //  地图视图
   // ========================
   worldToCanvas(wx, wz, cw, ch) {
-    const ds = this.DIM_SCALE[this.activeDim] || 1;
-    const nx = wx * ds;
-    const nz = wz * ds;
-    const cx = (nx - this.MAP_CENTER_X) * this.MAP_SCALE + cw / 2 + this._panX;
-    const cy = ch / 2 - (nz - this.MAP_CENTER_Z) * this.MAP_SCALE + this._panZ;
+    const cx = (wx - this.MAP_CENTER_X) * this.MAP_SCALE + cw / 2 + this._panX;
+    const cy = ch / 2 - (wz - this.MAP_CENTER_Z) * this.MAP_SCALE + this._panZ;
     return [cx, cy];
   },
 
@@ -344,9 +338,8 @@ const App = {
     const worldMinZ = Math.min(visMinZ, visMaxZ);
     const worldMaxZ = Math.max(visMinZ, visMaxZ);
 
-    // 计算网格间隔（以显示空间为准，地狱维度 ×8）
-    const ds = this.DIM_SCALE[this.activeDim] || 1;
-    const dispRange = Math.max(worldMaxX - worldMinX, worldMaxZ - worldMinZ) * ds;
+    // 计算网格间隔
+    const dispRange = Math.max(worldMaxX - worldMinX, worldMaxZ - worldMinZ);
     let gs = 100;
     if (dispRange > 8000) gs = 1000;
     else if (dispRange > 3000) gs = 500;
@@ -620,10 +613,9 @@ const App = {
   },
 
   canvasToWorld(cx, cy, cw, ch) {
-    const ds = this.DIM_SCALE[this.activeDim] || 1;
-    const nx = (cx - cw / 2 - this._panX) / this.MAP_SCALE + this.MAP_CENTER_X;
-    const nz = this.MAP_CENTER_Z - (cy - ch / 2 - this._panZ) / this.MAP_SCALE;
-    return [nx / ds, nz / ds];
+    const wx = (cx - cw / 2 - this._panX) / this.MAP_SCALE + this.MAP_CENTER_X;
+    const wz = this.MAP_CENTER_Z - (cy - ch / 2 - this._panZ) / this.MAP_SCALE;
+    return [wx, wz];
   },
 
   findMapMachine(ex, ey) {
@@ -925,11 +917,11 @@ const App = {
           if (hit.isStation) {
             const s = hit.station;
             const icon = this.STATION_ICONS[s.type] || '';
-            tooltip.innerHTML = `<div class="tt-name">${icon} ${this.escapeHtml(s.name)}</div><div class="tt-products">${s.type} — 点击定位</div>`;
+            tooltip.innerHTML = `<div class="tt-name">${icon} ${this.escapeHtml(s.name)}</div><div class="tt-products">${s.type}</div>`;
           } else if (hit.isRegion) {
             const regionInfo = this.regions[hit.folder];
             const name = regionInfo ? regionInfo.name : hit.folder;
-            tooltip.innerHTML = `<div class="tt-name">${this.escapeHtml(name)}</div><div class="tt-products">${hit.machines.length}个设施 — 点击放大</div>`;
+            tooltip.innerHTML = `<div class="tt-name">${this.escapeHtml(name)}</div><div class="tt-products">${hit.machines.length}个设施</div>`;
           } else {
             const prods = (hit.machine.products || []).slice(0, 4).join('、');
             const more = (hit.machine.products || []).length > 4 ? '…' : '';
@@ -969,36 +961,7 @@ const App = {
       if (this._dragMoved) return;
       const rect = canvas.getBoundingClientRect();
       const hit = this.findMapMachine(e.clientX - rect.left, e.clientY - rect.top);
-      if (!hit) return;
-      if (hit.isStation) {
-        // 点击站点：跳到该站点坐标并放大
-        const loc = (hit.station.locations || [])[0];
-        if (loc && loc.coords) {
-          this.MAP_SCALE = REGION_THRESHOLD + 0.15;
-          this._panX = 0;
-          this._panZ = 0;
-          this.MAP_CENTER_X = loc.coords[0];
-          this.MAP_CENTER_Z = loc.coords[2];
-          this.activeDim = loc.dimension || this.activeDim;
-          this.renderDimensionTabs();
-          this.renderMap();
-        }
-      } else if (hit.isRegion) {
-        // 点击区域：放大并居中到该区域
-        this.MAP_SCALE = REGION_THRESHOLD + 0.15;
-        this._panX = 0;
-        this._panZ = 0;
-        const info = this.regions[hit.folder];
-        if (info && info.center) {
-          this.MAP_CENTER_X = info.center[0];
-          this.MAP_CENTER_Z = info.center[2];
-          this.activeDim = info.dimension || this.activeDim;
-          this.renderDimensionTabs();
-        }
-        this.renderMap();
-      } else {
-        this.showDetail(hit.machine);
-      }
+      if (hit && hit.machine) this.showDetail(hit.machine);
     });
 
     canvas.addEventListener('mouseleave', () => {

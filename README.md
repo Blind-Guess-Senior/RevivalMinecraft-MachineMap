@@ -117,6 +117,7 @@ fs.writeFileSync('files.json', JSON.stringify(walk('.').sort(), null, 2));
 | `locations`    | ✓    | 对象数组   | `dimension` + `coords: [x, y, z]`         |
 | `products`     |      | 字符串数组 | 产物。`家` / `奇观` 无需                  |
 | `usage`        |      | 字符串     | 使用方法                                  |
+| `opmode`       |      | 字符串     | 运作方式（如"手动""全自动""半自动"）      |
 | `station`      |      | 字符串     | 关联站点名                                |
 | `contributors` |      | 字符串     | 建造者                                    |
 | `owner`        |      | 字符串     | 所属人（仅 `家`）                         |

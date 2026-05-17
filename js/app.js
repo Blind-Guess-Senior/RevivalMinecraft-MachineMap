@@ -180,6 +180,7 @@ const App = {
         m.owner || '',
         m.usage || '',
         m.notes || '',
+        m.opmode || '',
         m.station || '',
         ...(m.locations || []).map(l => l.dimension + ' ' + (l.coords || []).join(' '))
       ].join(' ').toLowerCase();
@@ -668,6 +669,7 @@ const App = {
 
       const video = m.video_url ? `<a class="card-video" href="${this.escapeHtml(m.video_url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">📺 教程视频</a>` : '';
       const contrib = m.contributors ? `<div class="card-contrib">👤 ${this.escapeHtml(m.contributors)}</div>` : '';
+      const opmode = m.opmode ? `<div class="card-contrib">⚙️ ${this.escapeHtml(m.opmode)}</div>` : '';
 
       return `
         <div class="card ${catKey}${disabled}" data-idx="${this.filtered.indexOf(m)}">
@@ -678,6 +680,7 @@ const App = {
           <div class="card-locations">${locs}</div>
           ${prods ? `<div class="card-products">${prods}</div>` : ''}
           ${travel}
+          ${opmode}
           ${contrib}
           ${m.usage ? `<div class="card-usage">${this.escapeHtml(m.usage)}</div>` : ''}
           ${video}
@@ -780,6 +783,9 @@ const App = {
     const contrib = machine.contributors
       ? `<div class="modal-section"><div class="modal-label">贡献者</div><div class="modal-value">${this.escapeHtml(machine.contributors)}</div></div>`
       : '';
+    const opmode = machine.opmode
+      ? `<div class="modal-section"><div class="modal-label">运作方式</div><div class="modal-value">${this.escapeHtml(machine.opmode)}</div></div>`
+      : '';
 
     content.innerHTML = `
       <div class="modal-header">
@@ -789,6 +795,7 @@ const App = {
       <div class="modal-section"><div class="modal-label">状态</div><div class="modal-value">${status}</div></div>
       <div class="modal-section"><div class="modal-label">位置</div><div class="modal-value">${locs}</div></div>
       ${contrib}
+      ${opmode}
       ${travel}
       ${extra}
       ${notes ? `<div class="modal-section">${notes}</div>` : ''}

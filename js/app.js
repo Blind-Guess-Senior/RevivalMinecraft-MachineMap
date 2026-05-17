@@ -443,24 +443,22 @@ const App = {
         rects.push({ sx: cx, sz: cz, r, isRegion: true, folder, machines: group.pts.map(p => p.machine) });
       }
 
-      // 散装机器：画独立小点
+      // 散装机器：emoji 小图标
       for (const p of loose) {
         const [sx, sz] = this.worldToCanvas(p.x, p.z, w, h);
-        const color = this.CAT_COLORS[p.machine.category] || '#9e9e9e';
-        const dotR = 5;
-        ctx.beginPath();
-        ctx.arc(sx, sz, dotR + 1, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255,255,255,0.15)';
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(sx, sz, dotR, 0, Math.PI * 2);
-        ctx.fillStyle = color;
-        ctx.fill();
+        const icon = this.CAT_ICONS[p.machine.category] || '📍';
+        const dotR = 6;
+        ctx.fillStyle = '#fff';
+        ctx.font = '13px ' + getComputedStyle(document.body).fontFamily;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(icon, sx, sz);
         ctx.fillStyle = '#e4e4f0';
         ctx.font = 'bold 10px ' + getComputedStyle(document.body).fontFamily;
         ctx.textAlign = 'left';
-        ctx.fillText(p.machine.name, sx + dotR + 3, sz + 3);
-        rects.push({ sx, sz, r: dotR + 3, machine: p.machine, x: p.x, z: p.z });
+        ctx.textBaseline = 'middle';
+        ctx.fillText(p.machine.name, sx + dotR + 1, sz);
+        rects.push({ sx, sz, r: dotR + 2, machine: p.machine, x: p.x, z: p.z });
       }
 
       // --- 交通覆盖层：站点 + 线路 ---
@@ -568,39 +566,42 @@ const App = {
         }
       }
     } else {
-      // --- 机器模式 ---
-      const dotR = 7;
+      // --- 机器模式：emoji 标点 ---
+      const dotR = 8;
 
       for (const p of pts) {
         const [sx, sz] = this.worldToCanvas(p.x, p.z, w, h);
-        const color = this.CAT_COLORS[p.machine.category] || '#9e9e9e';
+        const icon = this.CAT_ICONS[p.machine.category] || '📍';
         const isOff = p.machine.enabled === false;
 
-        ctx.beginPath();
-        ctx.arc(sx, sz, dotR + 2, 0, Math.PI * 2);
-        ctx.fillStyle = isOff ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.2)';
-        ctx.fill();
+        // emoji 图标
+        ctx.fillStyle = isOff ? 'rgba(255,255,255,0.3)' : '#fff';
+        ctx.font = '16px ' + getComputedStyle(document.body).fontFamily;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(icon, sx, sz);
 
-        ctx.beginPath();
-        ctx.arc(sx, sz, dotR, 0, Math.PI * 2);
-        ctx.fillStyle = isOff ? '#555' : color;
-        ctx.fill();
-
+        // 禁用标记
         if (isOff) {
           ctx.strokeStyle = '#ef5350';
           ctx.lineWidth = 1.5;
           ctx.beginPath();
-          ctx.moveTo(sx - 3.5, sz - 3.5); ctx.lineTo(sx + 3.5, sz + 3.5);
-          ctx.moveTo(sx + 3.5, sz - 3.5); ctx.lineTo(sx - 3.5, sz + 3.5);
+          ctx.arc(sx, sz, dotR + 2, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(sx - 4, sz - 4); ctx.lineTo(sx + 4, sz + 4);
+          ctx.moveTo(sx + 4, sz - 4); ctx.lineTo(sx - 4, sz + 4);
           ctx.stroke();
         }
 
+        // 名称标签
         ctx.fillStyle = '#e4e4f0';
         ctx.font = 'bold 11px ' + getComputedStyle(document.body).fontFamily;
         ctx.textAlign = 'left';
-        ctx.fillText(p.machine.name, sx + dotR + 4, sz + 4);
+        ctx.textBaseline = 'middle';
+        ctx.fillText(p.machine.name, sx + dotR + 2, sz);
 
-        rects.push({ sx, sz, r: dotR + 4, machine: p.machine, x: p.x, z: p.z });
+        rects.push({ sx, sz, r: dotR + 2, machine: p.machine, x: p.x, z: p.z });
       }
     }
 
@@ -631,12 +632,18 @@ const App = {
     const mx = ex / (rect.width / canvas.clientWidth);
     const my = ey / (rect.height / canvas.clientHeight);
 
+    let best = null;
     for (const r of this._mapRects) {
       const dx = mx - r.sx;
       const dy = my - r.sz;
-      if (dx * dx + dy * dy <= r.r * r.r) return r;
+      if (dx * dx + dy * dy <= r.r * r.r) {
+        // 优先站点 > 机器 > 区域（区域半径大，优先级最低）
+        if (r.isStation) return r;
+        if (r.isRegion) { best = r; }
+        else if (!best || best.isRegion) best = r;
+      }
     }
-    return null;
+    return best;
   },
 
   // ========================
@@ -967,7 +974,7 @@ const App = {
         // 点击站点：跳到该站点坐标并放大
         const loc = (hit.station.locations || [])[0];
         if (loc && loc.coords) {
-          this.MAP_SCALE = REGION_THRESHOLD * 1.2;
+          this.MAP_SCALE = REGION_THRESHOLD + 0.15;
           this._panX = 0;
           this._panZ = 0;
           this.MAP_CENTER_X = loc.coords[0];
@@ -978,7 +985,7 @@ const App = {
         }
       } else if (hit.isRegion) {
         // 点击区域：放大并居中到该区域
-        this.MAP_SCALE = REGION_THRESHOLD * 1.2;
+        this.MAP_SCALE = REGION_THRESHOLD + 0.15;
         this._panX = 0;
         this._panZ = 0;
         const info = this.regions[hit.folder];

@@ -9,10 +9,10 @@ machines:
       - dimension: 主世界
         coords: [-1043, 123, 401]
     products:
-      - 铁锭
-      - 虞美人
+      - 盒装铁块
     usage: >
-      打开花销毁开关和机器开关
+      打开花销毁开关和机器开关。
+    opmode:
     station: 东南山
     contributors: wusanmaster
     notes: >
@@ -29,6 +29,7 @@ machines:
       - 竹子
     usage: >
       投入骨粉，打开开关。
+    opmode: 开关式全自动
     station: 东南山
     contributors: wusanmaster
     notes:
@@ -46,6 +47,7 @@ machines:
       - 树苗
     usage: >
       机器告示牌上详细写明使用方法。
+    opmode: 手动
     station: 东南山
     contributors: wusanmaster
     notes: >
@@ -66,6 +68,7 @@ machines:
       - 甜菜根
     usage: >
       告示牌上有详细说明。
+    opmode: 手动
     station: 东南山
     contributors: wusanmaster
     notes:
@@ -82,10 +85,10 @@ machines:
       - 16色羊毛 (单色打盒)
     usage: >
       从箱子里直接拿，有散装和盒装两种形式。
+    opmode: 半自动 (需定期填充剪刀)
     station: 东南山
     contributors: 盲猜派高层
-    notes: >
-      需要定期填充剪刀
+    notes:
     video_url: https://www.bilibili.com/video/BV11m4y1q7bP/
 
   - name: 仙人掌农场
@@ -100,7 +103,8 @@ machines:
       - 经验
     usage: >
       箱子取用。
-      下方熔炉烧炼绿色染料，拿走即可获取经验。
+      下方熔炉烧炼绿色染料，拿走即可获取经验。关闭活塞旁开关以补充燃料。
+    opmode: 全自动 + 开关式全自动 (补充燃料)
     station: 东南山
     contributors: 盲猜派高层
     notes:
@@ -117,6 +121,7 @@ machines:
       - 蜂蜜瓶
     usage: >
       打开开关挂机。
+    opmode: 需挂机
     station: 东南山
     contributors: wusanmaster
     notes: >

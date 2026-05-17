@@ -10,11 +10,11 @@ machines:
       - 圆石
     usage: >
       打开开关。
+    opmode: 开关式全自动
     station: 东南山
     contributors: wusanmaster
     notes: >
-      理论上抗卸载。
-      确保每周一服务器停机备份时处于关机状态。
+      抗卸载。
     video_url:
 
   - name: 192熔炉组
@@ -27,9 +27,9 @@ machines:
       - 烧炼产物
     usage: >
       原料放入铁轨上面的箱子。机器开关在地狱门加载器旁边，向下为开启。
+    opmode: 开关式全自动
     station: 东南山
     contributors: wusanmaster
     notes: >
       抗卸载。
-      确保每周一服务器停机备份时处于关机或已完成状态。
     video_url:

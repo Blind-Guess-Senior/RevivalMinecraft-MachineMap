@@ -10,8 +10,9 @@ machines:
       - 潜影壳
     usage: >
       登上脚手架，关闭活板门挂机。
+    opmode: 需挂机
     station:
     contributors: wusanmaster
     notes: >
-      需要烟花鞘翅
+      需要烟花鞘翅以在末地自由行动。
     video_url:

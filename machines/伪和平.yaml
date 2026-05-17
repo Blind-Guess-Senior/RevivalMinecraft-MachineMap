@@ -11,6 +11,7 @@ machines:
         coords: [-470, 128, 59]
     usage: >
       参见视频教程。
+    opmode: 手动
     station: 主世界伪和平地狱门
     contributors: wusanmaster
     notes:
@@ -28,6 +29,7 @@ machines:
       - 地狱伪和平（抑制猪人以外怪物生成）
     usage: >
       在烈焰人刷怪笼下方挂机。从后面地狱门加载器返回主世界。从 (1270, 111, 9410) 地狱门返回地狱，然后回家。
+    opmode: 手动
     station: 地狱伪和平地狱门
     contributors: wusanmaster
     notes: >

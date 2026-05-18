@@ -26,13 +26,16 @@ const App = {
   // 线路方法样式
   ROUTE_METHODS: ['矿车', '地狱矿车', '马道', '冰道', '水路', '空路'],
   ROUTE_STYLES: {
-    '矿车': { color: '#ffb432', dash: [10, 5] },
-    '地狱矿车': { color: '#e040fb', dash: [8, 4] },
-    '马道': { color: '#8d6e63', dash: [] },
-    '冰道': { color: '#4fc3f7', dash: [3, 3] },
-    '水路': { color: '#1e88e5', dash: [2, 6] },
-    '空路': { color: '#e0e0e0', dash: [1, 8] }
+    '矿车':       { color: '#ffb432', dash: [10, 5] },
+    '地狱矿车':   { color: '#e040fb', dash: [8, 4] },
+    '马道':       { color: '#8d6e63', dash: [] },
+    '冰道':       { color: '#4fc3f7', dash: [3, 3] },
+    '水路':       { color: '#1e88e5', dash: [2, 6] },
+    '空路':       { color: '#e0e0e0', dash: [1, 8] }
   },
+
+  // 路线跨维度显示：method → 额外显示的维度列表
+  ROUTE_CROSS_SHOW: { '地狱矿车': ['主世界'] },
 
   // 地图状态
   _mapRects: [],
@@ -56,7 +59,18 @@ const App = {
   CAT_COLORS: { '农场': '#4caf50', '工厂': '#ff9800', '功能性': '#42a5f5', '家': '#ec407a', '奇观': '#f4b400', '其他': '#9e9e9e' },
   CAT_ICONS: { '农场': '🌾', '工厂': '🏭', '功能性': '🔧', '家': '🏠', '奇观': '🏛️', '其他': '📌' },
 
+  // 无需产品字段的分类（用 owner/notes 代替）
+  LANDMARK_CATEGORIES: ['家', '奇观'],
+
+  // 地图缩放阈值：低于此值为区域模式，高于为机器模式
+  REGION_THRESHOLD: 1.2,
+
+  // 缓存字体，避免渲染时重复 getComputedStyle
+  _font: '',
+
   // === 初始化 ===
+  async init() {
+    this._font = this._font;
   async init() {
     try {
       // 加载构建时自动生成的文件清单
@@ -316,7 +330,7 @@ const App = {
     // 空状态
     if (pts.length === 0) {
       ctx.fillStyle = '#666680';
-      ctx.font = '16px ' + getComputedStyle(document.body).fontFamily;
+      ctx.font = '16px ' + this._font;
       ctx.textAlign = 'center';
       ctx.fillText('该维度暂无数据', w / 2, h / 2);
       this._mapRects = [];
@@ -349,7 +363,7 @@ const App = {
     const gz0 = Math.floor(worldMinZ / gs) * gs;
 
     ctx.fillStyle = '#555';
-    ctx.font = '10px ' + getComputedStyle(document.body).fontFamily;
+    ctx.font = '10px ' + this._font;
 
     for (let gx = gx0; gx <= worldMaxX; gx += gs) {
       const [sx] = this.worldToCanvas(gx, 0, w, h);
@@ -383,9 +397,8 @@ const App = {
     }
 
     const rects = [];
-    const REGION_THRESHOLD = 1.2;
 
-    if (this.MAP_SCALE < REGION_THRESHOLD) {
+    if (this.MAP_SCALE < this.REGION_THRESHOLD) {
       // --- 区域模式：有归属的画区域圆圈，散装机器画独立点 ---
       const grouped = [];   // 有 _folder 的
       const loose = [];     // 无 _folder 的
@@ -403,18 +416,7 @@ const App = {
       }
 
       for (const [folder, group] of Object.entries(groups)) {
-        const info = group.region;
-        let cx, cz;
-        if (info && info.center) {
-          [cx, cz] = this.worldToCanvas(info.center[0], info.center[2], w, h);
-        } else {
-          let sx = 0, sz = 0;
-          for (const p of group.pts) { sx += p.x; sz += p.z; }
-          [cx, cz] = this.worldToCanvas(sx / group.pts.length, sz / group.pts.length, w, h);
-        }
-
-        const r = Math.max(18, 10 + group.pts.length * 3);
-        const name = info ? info.name : folder;
+        const { cx, cz, r, name } = this._groupLayout(group, w, h);
 
         ctx.beginPath();
         ctx.arc(cx, cz, r, 0, Math.PI * 2);
@@ -425,14 +427,16 @@ const App = {
         ctx.stroke();
 
         ctx.fillStyle = '#fff';
-        ctx.font = 'bold 14px ' + getComputedStyle(document.body).fontFamily;
+        ctx.font = 'bold 14px ' + this._font;
         ctx.textAlign = 'center';
         ctx.fillText(name, cx, cz - 4);
 
         ctx.fillStyle = '#aaa';
-        ctx.font = '12px ' + getComputedStyle(document.body).fontFamily;
+        ctx.font = '12px ' + this._font;
         ctx.fillText(group.pts.length + '个设施', cx, cz + 16);
 
+        // 缓存布局信息供站点定位使用
+        group._layout = { cx, cz, r };
         rects.push({ sx: cx, sz: cz, r, isRegion: true, folder, machines: group.pts.map(p => p.machine) });
       }
 
@@ -442,12 +446,12 @@ const App = {
         const icon = this.CAT_ICONS[p.machine.category] || '📍';
         const dotR = 6;
         ctx.fillStyle = '#fff';
-        ctx.font = '13px ' + getComputedStyle(document.body).fontFamily;
+        ctx.font = '13px ' + this._font;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(icon, sx, sz);
         ctx.fillStyle = '#e4e4f0';
-        ctx.font = 'bold 10px ' + getComputedStyle(document.body).fontFamily;
+        ctx.font = 'bold 10px ' + this._font;
         ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
         ctx.fillText(p.machine.name, sx + dotR + 1, sz);
@@ -459,27 +463,14 @@ const App = {
         const stationPositions = {};
         for (const s of this.stations) {
           if (!s.name || !s.locations || s.locations.length === 0) continue;
-          // 维度过滤：本维度有坐标，或地狱门在主世界跨维度显示
-          let loc = s.locations.find(l => l.dimension === this.activeDim);
-          const crossDim = s.type === '地狱门' && this.activeDim === '主世界' && !loc;
-          if (!loc && crossDim) loc = s.locations.find(l => l.dimension === '主世界');
+          const loc = s.locations.find(l => l.dimension === this.activeDim);
           if (!loc || !loc.coords) continue;
           const [swx, swz] = [loc.coords[0], loc.coords[2]];
 
           const regKey = s.region;
-          if (regKey && groups[regKey]) {
+          if (regKey && groups[regKey] && groups[regKey]._layout) {
             // 有归属区域：画在区域圆圈边缘
-            const grp = groups[regKey];
-            const info = grp.region;
-            let rcx, rcz;
-            if (info && info.center) {
-              [rcx, rcz] = this.worldToCanvas(info.center[0], info.center[2], w, h);
-            } else {
-              let sx = 0, sz = 0;
-              for (const p of grp.pts) { sx += p.x; sz += p.z; }
-              [rcx, rcz] = this.worldToCanvas(sx / grp.pts.length, sz / grp.pts.length, w, h);
-            }
-            const rr = Math.max(18, 10 + grp.pts.length * 3);
+            const { cx: rcx, cz: rcz, r: rr } = groups[regKey]._layout;
             const [ssx, ssz] = this.worldToCanvas(swx, swz, w, h);
             const angle = Math.atan2(rcx - ssx, rcz - ssz);
             const esx = rcx - rr * Math.sin(angle);
@@ -492,14 +483,12 @@ const App = {
           }
         }
 
-        // 画线路（按维度过滤：地狱矿车在主世界和地狱显示，其余仅主世界）
-        const NATIVE_DIM = { '地狱矿车': '地狱' };
+        // 画线路（维度由站点坐标决定，crossShow 方法在额外维度降透明度）
         for (const route of this.routes) {
-          const nativeDim = NATIVE_DIM[route.method] || '主世界';
-          const crossDim = route.method === '地狱矿车' && this.activeDim === '主世界';
-          if (this.activeDim !== nativeDim && !crossDim) continue;
-          ctx.globalAlpha = crossDim ? 0.25 : 0.55;
           const style = this.ROUTE_STYLES[route.method] || { color: '#888', dash: [] };
+          const extraDims = this.ROUTE_CROSS_SHOW[route.method];
+          const crossFade = extraDims && extraDims.includes(this.activeDim);
+          ctx.globalAlpha = crossFade ? 0.25 : 0.55;
           ctx.strokeStyle = style.color;
           ctx.lineWidth = 1.0;
           ctx.setLineDash(style.dash);
@@ -521,20 +510,20 @@ const App = {
           if (pts.length >= 2) {
             ctx.beginPath();
             ctx.moveTo(pts[0].sx, pts[0].sz);
-            for (let i = 1; i < pts.length; i++) {
-              ctx.lineTo(pts[i].sx, pts[i].sz);
-            }
+            for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].sx, pts[i].sz);
             ctx.stroke();
 
-            // 标签放在线路中点
-            const mid = Math.floor(pts.length / 2);
-            const label = [route.time].filter(Boolean).join(' ');
-            if (label) {
+            // 线路名标注在每段中点
+            if (route.name) {
               ctx.globalAlpha = 1;
               ctx.fillStyle = '#999';
-              ctx.font = '10px ' + getComputedStyle(document.body).fontFamily;
+              ctx.font = '10px ' + this._font;
               ctx.textAlign = 'center';
-              ctx.fillText(label, pts[mid].sx, pts[mid].sz - 6);
+              for (let i = 0; i < pts.length - 1; i++) {
+                const mx = (pts[i].sx + pts[i + 1].sx) / 2;
+                const mz = (pts[i].sz + pts[i + 1].sz) / 2;
+                ctx.fillText(route.name, mx, mz - 6);
+              }
             }
           }
 
@@ -556,7 +545,7 @@ const App = {
           ctx.fillStyle = color;
           ctx.fill();
           ctx.fillStyle = '#fff';
-          ctx.font = 'bold 7px ' + getComputedStyle(document.body).fontFamily;
+          ctx.font = 'bold 7px ' + this._font;
           ctx.textAlign = 'center';
           ctx.fillText(icon, sp.sx, sp.sz + 2.5);
           // 存储站点命中的 rect
@@ -574,7 +563,7 @@ const App = {
 
         // emoji 图标
         ctx.fillStyle = isOff ? 'rgba(255,255,255,0.3)' : '#fff';
-        ctx.font = '16px ' + getComputedStyle(document.body).fontFamily;
+        ctx.font = '16px ' + this._font;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(icon, sx, sz);
@@ -594,7 +583,7 @@ const App = {
 
         // 名称标签
         ctx.fillStyle = '#e4e4f0';
-        ctx.font = 'bold 11px ' + getComputedStyle(document.body).fontFamily;
+        ctx.font = 'bold 11px ' + this._font;
         ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
         ctx.fillText(p.machine.name, sx + dotR + 2, sz);
@@ -621,6 +610,21 @@ const App = {
     const wx = (cx - cw / 2 - this._panX) / this.MAP_SCALE + this.MAP_CENTER_X;
     const wz = this.MAP_CENTER_Z - (cy - ch / 2 - this._panZ) / this.MAP_SCALE;
     return [wx, wz];
+  },
+
+  // 计算区域圆圈圆心和半径
+  _groupLayout(group, w, h) {
+    const info = group.region;
+    let cx, cz;
+    if (info && info.center) {
+      [cx, cz] = this.worldToCanvas(info.center[0], info.center[2], w, h);
+    } else {
+      let sx = 0, sz = 0;
+      for (const p of group.pts) { sx += p.x; sz += p.z; }
+      [cx, cz] = this.worldToCanvas(sx / group.pts.length, sz / group.pts.length, w, h);
+    }
+    const r = Math.max(18, 10 + group.pts.length * 3);
+    return { cx, cz, r, name: info ? info.name : group.pts[0].machine._folder };
   },
 
   findMapMachine(ex, ey) {
@@ -657,10 +661,10 @@ const App = {
     }
     empty.hidden = true;
 
-    grid.innerHTML = this.filtered.map(m => {
+    grid.innerHTML = this.filtered.map((m, i) => {
       const catKey = this.CAT_KEYS[m.category] || 'other';
       const disabled = m.enabled === false ? ' disabled' : '';
-      const isLandmark = m.category === '家' || m.category === '奇观';
+      const isLandmark = this.LANDMARK_CATEGORIES.includes(m.category);
 
       const locs = (m.locations || []).map(l =>
         `<div><span class="card-loc-dim">${l.dimension}</span> <span class="card-loc-coords">${(l.coords || []).join(', ')}</span></div>`
@@ -677,7 +681,7 @@ const App = {
       const opmode = m.opmode ? `<div class="card-contrib">⚙️ ${this.escapeHtml(m.opmode)}</div>` : '';
 
       return `
-        <div class="card ${catKey}${disabled}" data-idx="${this.filtered.indexOf(m)}">
+        <div class="card ${catKey}${disabled}" data-idx="${i}">
           <div class="card-header">
             <span class="card-name">${this.escapeHtml(m.name)}</span>
             <span class="card-badge ${catKey}">${this.CAT_ICONS[m.category] || ''} ${m.category}</span>
@@ -725,7 +729,7 @@ const App = {
       const locs = (m.locations || []).map(l =>
         `<div>${l.dimension}: ${(l.coords || []).join(', ')}</div>`
       ).join('');
-      const isLandmark = m.category === '家' || m.category === '奇观';
+      const isLandmark = this.LANDMARK_CATEGORIES.includes(m.category);
       const prods = isLandmark
         ? (m.owner ? '👤 ' + this.escapeHtml(m.owner) : '')
         : (m.products || []).join('、');
@@ -751,7 +755,7 @@ const App = {
     const overlay = document.getElementById('detail-overlay');
     const content = document.getElementById('modal-content');
     const catKey = this.CAT_KEYS[machine.category] || 'other';
-    const isLandmark = machine.category === '家' || machine.category === '奇观';
+    const isLandmark = this.LANDMARK_CATEGORIES.includes(machine.category);
 
     const locs = (machine.locations || []).map(l =>
       `<div>📍 <strong>${l.dimension}</strong>：<span class="modal-value mono">${(l.coords || []).join(', ')}</span></div>`
@@ -930,7 +934,7 @@ const App = {
           } else {
             const prods = (hit.machine.products || []).slice(0, 4).join('、');
             const more = (hit.machine.products || []).length > 4 ? '…' : '';
-            const label = (hit.machine.category === '家' || hit.machine.category === '奇观')
+            const label = this.LANDMARK_CATEGORIES.includes(hit.machine.category)
               ? (hit.machine.owner ? `👤 ${this.escapeHtml(hit.machine.owner)}` : (hit.machine.notes || ''))
               : `${prods}${more}`;
             tooltip.innerHTML = `<div class="tt-name">${this.escapeHtml(hit.machine.name)}</div>${label ? `<div class="tt-products">${label}</div>` : ''}`;

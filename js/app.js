@@ -624,8 +624,8 @@ const App = {
       const nativeDs = this.DIM_SCALE[info.dimension] || 1;
       const curDs = this.DIM_SCALE[this.activeDim] || 1;
       [cx, cz] = this.worldToCanvas(
-        Math.round(info.center[0] * curDs / nativeDs),
-        Math.round(info.center[2] * curDs / nativeDs), w, h);
+        Math.round(info.center[0] * nativeDs / curDs),
+        Math.round(info.center[2] * nativeDs / curDs), w, h);
     } else {
       let sx = 0, sz = 0;
       for (const p of group.pts) { sx += p.x; sz += p.z; }

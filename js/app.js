@@ -616,12 +616,16 @@ const App = {
     return [wx, wz];
   },
 
-  // 计算区域圆圈圆心和半径
+  // 计算区域圆圈圆心和半径（跨维度自动换算中心坐标）
   _groupLayout(group, w, h) {
     const info = group.region;
     let cx, cz;
     if (info && info.center) {
-      [cx, cz] = this.worldToCanvas(info.center[0], info.center[2], w, h);
+      const nativeDs = this.DIM_SCALE[info.dimension] || 1;
+      const curDs = this.DIM_SCALE[this.activeDim] || 1;
+      [cx, cz] = this.worldToCanvas(
+        Math.round(info.center[0] * curDs / nativeDs),
+        Math.round(info.center[2] * curDs / nativeDs), w, h);
     } else {
       let sx = 0, sz = 0;
       for (const p of group.pts) { sx += p.x; sz += p.z; }

@@ -73,8 +73,7 @@ const App = {
 
   // === 初始化 ===
   async init() {
-    this._font = this._font;
-  async init() {
+    this._font = getComputedStyle(document.body).fontFamily;
     try {
       // 加载构建时自动生成的文件清单
       const manifestResp = await fetch('machines/files.json');

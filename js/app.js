@@ -459,7 +459,10 @@ const App = {
         const stationPositions = {};
         for (const s of this.stations) {
           if (!s.name || !s.locations || s.locations.length === 0) continue;
-          const loc = s.locations.find(l => l.dimension === this.activeDim) || s.locations[0];
+          // 维度过滤：本维度有坐标，或地狱门在主世界跨维度显示
+          let loc = s.locations.find(l => l.dimension === this.activeDim);
+          const crossDim = s.type === '地狱门' && this.activeDim === '主世界' && !loc;
+          if (!loc && crossDim) loc = s.locations.find(l => l.dimension === '主世界');
           if (!loc || !loc.coords) continue;
           const [swx, swz] = [loc.coords[0], loc.coords[2]];
 
@@ -489,12 +492,14 @@ const App = {
           }
         }
 
-        // 画线路
+        // 画线路（按维度过滤：地狱矿车在主世界和地狱显示，其余仅主世界）
         const NATIVE_DIM = { '地狱矿车': '地狱' };
         for (const route of this.routes) {
-          const style = this.ROUTE_STYLES[route.method] || { color: '#888', dash: [] };
           const nativeDim = NATIVE_DIM[route.method] || '主世界';
-          ctx.globalAlpha = this.activeDim === nativeDim ? 0.55 : 0.25;
+          const crossDim = route.method === '地狱矿车' && this.activeDim === '主世界';
+          if (this.activeDim !== nativeDim && !crossDim) continue;
+          ctx.globalAlpha = crossDim ? 0.25 : 0.55;
+          const style = this.ROUTE_STYLES[route.method] || { color: '#888', dash: [] };
           ctx.strokeStyle = style.color;
           ctx.lineWidth = 1.0;
           ctx.setLineDash(style.dash);

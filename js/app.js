@@ -65,6 +65,9 @@ const App = {
   // 地图缩放阈值：低于此值为区域模式，高于为机器模式
   REGION_THRESHOLD: 1.2,
 
+  // 维度缩放：地狱坐标 ×8 后与主世界对齐，切换维度时同一地狱门位置不变
+  DIM_SCALE: { '主世界': 1, '地狱': 8, '末地': 1 },
+
   // 缓存字体，避免渲染时重复 getComputedStyle
   _font: '',
 
@@ -293,8 +296,9 @@ const App = {
   //  地图视图
   // ========================
   worldToCanvas(wx, wz, cw, ch) {
-    const cx = (wx - this.MAP_CENTER_X) * this.MAP_SCALE + cw / 2 + this._panX;
-    const cy = ch / 2 - (wz - this.MAP_CENTER_Z) * this.MAP_SCALE + this._panZ;
+    const ds = this.DIM_SCALE[this.activeDim] || 1;
+    const cx = (wx * ds - this.MAP_CENTER_X) * this.MAP_SCALE + cw / 2 + this._panX;
+    const cy = ch / 2 - (wz * ds - this.MAP_CENTER_Z) * this.MAP_SCALE + this._panZ;
     return [cx, cy];
   },
 
@@ -352,8 +356,8 @@ const App = {
     const worldMinZ = Math.min(visMinZ, visMaxZ);
     const worldMaxZ = Math.max(visMinZ, visMaxZ);
 
-    // 计算网格间隔
-    const dispRange = Math.max(worldMaxX - worldMinX, worldMaxZ - worldMinZ);
+    // 计算网格间隔（按显示空间，地狱 ×8 后还原真实间距）
+    const dispRange = Math.max(worldMaxX - worldMinX, worldMaxZ - worldMinZ) * (this.DIM_SCALE[this.activeDim] || 1);
     let gs = 100;
     if (dispRange > 8000) gs = 1000;
     else if (dispRange > 3000) gs = 500;
@@ -607,8 +611,9 @@ const App = {
   },
 
   canvasToWorld(cx, cy, cw, ch) {
-    const wx = (cx - cw / 2 - this._panX) / this.MAP_SCALE + this.MAP_CENTER_X;
-    const wz = this.MAP_CENTER_Z - (cy - ch / 2 - this._panZ) / this.MAP_SCALE;
+    const ds = this.DIM_SCALE[this.activeDim] || 1;
+    const wx = ((cx - cw / 2 - this._panX) / this.MAP_SCALE + this.MAP_CENTER_X) / ds;
+    const wz = (this.MAP_CENTER_Z - (cy - ch / 2 - this._panZ) / this.MAP_SCALE) / ds;
     return [wx, wz];
   },
 
@@ -894,8 +899,6 @@ const App = {
       const tab = e.target.closest('.dim-tab');
       if (!tab) return;
       this.activeDim = tab.dataset.dim;
-      this._panX = 0;
-      this._panZ = 0;
       this.renderDimensionTabs();
       this.renderMap();
     });

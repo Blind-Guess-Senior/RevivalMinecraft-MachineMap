@@ -138,6 +138,7 @@ routes:
 | `STATION_TYPES` / `STATION_COLORS` / `STATION_ICONS` | 六种站点类型 |
 | `ROUTE_METHODS` / `ROUTE_STYLES` / `ROUTE_CROSS_SHOW` | 六种线路方法；`ROUTE_CROSS_SHOW` 配置跨维显示：`{ '地狱矿车': ['主世界'] }` |
 | `REGION_THRESHOLD` | `1.2` — 缩放阈值，低于此值为区域模式，高于为机器模式 |
+| `DIM_SCALE` | `{ '主世界': 1, '地狱': 8, '末地': 1 }` — 地狱坐标 ×8 绘制，切换维度时地狱门落在同一像素位置 |
 | `MAP_CENTER_X/Z` / `MAP_SCALE` | 地图初始中心点和缩放，初始在 192熔炉组 |
 
 ### 核心流程

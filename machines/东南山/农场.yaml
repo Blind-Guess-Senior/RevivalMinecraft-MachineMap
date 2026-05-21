@@ -85,10 +85,10 @@ machines:
       - 16色羊毛 (单色打盒)
     usage: >
       从箱子里直接拿，有散装和盒装两种形式。
-    opmode: 半自动 (需定期填充剪刀)
+    opmode: 全自动
     station: 东南山
     contributors: 盲猜派高层
-    notes:
+    notes: 机器最上方最高箱子填充盒装铁块。
     video_url: https://www.bilibili.com/video/BV11m4y1q7bP/
 
   - name: 仙人掌农场

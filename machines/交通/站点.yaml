@@ -88,6 +88,13 @@ stations:
         coords: [-1350, 65, 1560]
 
   # 独立机器站点
+  # 沼泽刷怪塔
+  - name: 沼泽刷怪塔地狱门
+    type: 地狱门
+    locations:
+      - dimension: 主世界
+        coords: [-3538, 71, -1405]
+
   # 黑曜石农场
   - name: 黑曜石农场地狱门
     type: 地狱门

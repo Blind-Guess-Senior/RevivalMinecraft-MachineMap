@@ -1,0 +1,10 @@
+machines:
+  - name: 
+    category: 奇观
+    enabled: true
+    locations:
+      - dimension: 主世界
+        coords: [-539, 70, 86]
+    station: 北二环
+    contributors: rele
+    notes:

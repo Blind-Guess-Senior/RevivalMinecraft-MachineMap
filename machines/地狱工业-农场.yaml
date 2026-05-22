@@ -70,8 +70,9 @@ machines:
       - 盒装凋零骷髅头
       - 经验
     usage: >
-      亡灵杀手 + 横扫打假人。
-    opmode: 手动
+      站在盔甲架前台阶下，亡灵杀手 + 横扫打假人。
+      仅靠实体挤压伤害可获得掉落物，但无经验。
+    opmode: 需挂机 / 手动 (可产出经验)
     station:
     contributors: wusanmaster
     notes:
